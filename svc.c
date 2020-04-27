@@ -186,7 +186,6 @@ int svc_add(void *helper, char *file_name) {
         fseek(fin,0,SEEK_END);
         long length = ftell(fin);//get the file length
         fseek(fin,0,SEEK_SET);
-        printf("%d",length);
         char* line = (char*)malloc(sizeof(char)*length);//declare the space to save the content
         char temp = fgetc(fin);
         //cpy content
