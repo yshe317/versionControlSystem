@@ -217,7 +217,7 @@ int svc_rm(void *helper, char *file_name) {
     if(exist==-1){
         return -2;
     }else{
-        int hash = h->ws->folder[exist].hash;
+        hash = h->ws->folder[exist].hash;
         free(h->ws->folder[exist].filename);
         free(h->ws->folder[exist].content);
         for(int i = exist+1;i<h->ws->file_num;i++){
