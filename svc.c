@@ -40,7 +40,7 @@ void *svc_init(void) {
     // return helper;
     help* h = (help*)malloc(sizeof(help));
 
-    h->branches= (branch**)malloc(sizeof(branch));  // create space for master
+    h->branches= (branch**)malloc(sizeof(branch*));  // create space for master
     h->branches[0]->branchname = (char*)malloc(sizeof(char)*7);
     strcpy(h->branches[0]->branchname,"master");
     h->branches[0]->size = 0;
