@@ -163,8 +163,6 @@ int svc_add(void *helper, char *file_name) {
     if(fin == NULL){
         return -3;
     }
-
-    
     // add things into svc
     int exist = -1;
     help* h = (help*)helper;
@@ -175,7 +173,6 @@ int svc_add(void *helper, char *file_name) {
             break;
         }
     }
-    
     if(exist == -1) {//if file do not exist, put it in
         h->ws->file_num++;
         h->ws->folder = (s_file*)realloc(h->ws->folder,sizeof(s_file)*h->ws->file_num);
@@ -183,7 +180,6 @@ int svc_add(void *helper, char *file_name) {
         h->ws->folder[h->ws->file_num-1].filename = (char*)malloc(sizeof(char)*(strlen(file_name)+1));
         strcpy(h->ws->folder[h->ws->file_num-1].filename,file_name);
         //copy the file content
-
         fseek(fin,0,SEEK_END);
         long length = ftell(fin);//get the file length
         fseek(fin,0,SEEK_SET);
@@ -206,7 +202,31 @@ int svc_add(void *helper, char *file_name) {
 
 int svc_rm(void *helper, char *file_name) {
     // TODO: Implement
-    return 0;
+    help* h = (help*)helper;
+    if(file_name==NULL){
+        return -1;
+    }
+    int exist = -1;
+    for(int i = 0;i<h->ws->file_num;i++){
+        if(strcmp(file_name,h->ws->folder[i].filename)==0){
+            exist = i;
+            break;
+        }
+    }
+    int hash  =0;
+    if(exist==-1){
+        return -2;
+    }else{
+        int hash = h->ws->folder[exist].hash;
+        free(h->ws->folder[exist].filename);
+        free(h->ws->folder[exist].content);
+        for(int i = exist+1;i<h->ws->file_num;i++){
+            h->ws->folder[i-1] = h->ws->folder[i]; 
+        }
+        h->ws->file_num--;
+        h->ws->folder = (s_file*)realloc(h->ws->folder,h->ws->file_num*sizeof(s_file));
+    }
+    return hash;
 }
 
 int svc_reset(void *helper, char *commit_id) {
