@@ -62,7 +62,6 @@ void cleanup(void *helper) {
     // TODO: Implement
     help* h = (help*)helper;
     for(int i=0;i<h->ws->file_num;i++) {
-        free(h->ws->folder[i].content);
         free(h->ws->folder[i].filename);
     }
     free(h->ws->folder);
