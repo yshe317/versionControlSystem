@@ -154,7 +154,11 @@ void sort_s_file(working_space* ws) {
         }
     }
 }
+
 char *svc_commit(void *helper, char *message) {
+
+
+}
 //     // TODO: Implement
 //     //get commit id
 //     help* h = (help*)helper;
@@ -204,7 +208,7 @@ char *svc_commit(void *helper, char *message) {
 //     //     free(temp);
 //     // }
 //     return result;
-}
+
 
 void *get_commit(void *helper, char *commit_id) {
     // TODO: Implement
