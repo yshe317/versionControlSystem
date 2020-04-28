@@ -169,7 +169,7 @@ char *svc_commit(void *helper, char *message) {
             }
         }
         result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
-        itoa(id,result,16);
+        sprintf(result,"%x",id);
         h->head->m[0]->commitid = result; //set the commit id
     }
     return result;
