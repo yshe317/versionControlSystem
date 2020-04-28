@@ -112,6 +112,34 @@ int hash_file(void *helper, char *file_path) {
     fclose(fin);
     return hash;
 }
+float sort_num(char* s) {
+    float num = 0;
+    float level = 1;
+    for(int i = 0;i<strlen(s);i++){//the length of sa
+        num = num + (s[i]/level);
+        level = level*10;
+    }
+    return num;
+}
+void swap(s_file* a,s_file*b) {
+    char* temp;
+    temp = a->filename;
+    a->filename = b->filename;
+    b->filename = temp;
+    int tempnum;
+    tempnum = a->hash;
+    a->hash = b->hash;
+    b->hash = tempnum;
+}
+void sort_s_file(working_space* ws) {
+    for(int i = 0;i<ws->file_num;i++) {
+        for(int j = i;j<ws->file_num;j++) {
+            if(sort_num(ws->folder[i].filename)>sort_num(ws->folder[j].filename)){
+                swap(&ws->folder[i],&ws->folder[j]);
+            }
+        }
+    }
+}
 
 char *svc_commit(void *helper, char *message) {
     // TODO: Implement
