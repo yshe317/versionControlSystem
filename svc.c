@@ -34,6 +34,7 @@ typedef struct{ // current focus place
 typedef struct{
     branch** branches;
     int n_branches;
+    branch* head;
     working_space* ws;
 }help;
 
@@ -115,12 +116,34 @@ int hash_file(void *helper, char *file_path) {
 char *svc_commit(void *helper, char *message) {
     // TODO: Implement
     //get commit id
+    help* h = (help*)helper;
+    char* result = NULL;
     int id = 0;
     for(int i = 0;i<strlen(message);i++) {
         id = (id+message[i])%1000;
     }
-    
-    return NULL;
+    if(h->head->m==NULL){//init, first commit 
+        h->head->m = (node**)malloc(sizeof(node*)); //make a node for commit
+        h->head->m[0] = (node*)malloc(sizeof(node));
+        h->head->m[0]->size = h->ws->file_num; //copy n_files
+        h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
+        strcpy(h->head->m[0]->message,message);//copy message
+        h->head->m[0]->last_node =NULL; //set the last node
+        h->head->m[0]->files = (s_file*)malloc(h->head->m[0]->size*sizeof(s_file));//create memory for weak_file
+        sort_s_file(h->ws);
+        id = 0;
+        for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in 
+            id+=376591;
+            for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
+                //id = (id * (byte % 37)) % 15485863 + 1;
+                id = (id * (h->ws->folder[i].filename[j]%37) ) % 15485863 + 1;
+            }
+        }
+        result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
+        itoa(id,result,16);
+        h->head->m[0]->commitid = result; //set the commit id
+    }
+    return result;
 }
 
 void *get_commit(void *helper, char *commit_id) {
