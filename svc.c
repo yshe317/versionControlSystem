@@ -1,19 +1,19 @@
 #include "svc.h"
 #include<stdio.h>
 #include<string.h>
-#include<stdlib.h>
-//#include<direct.h>
+
 typedef struct node node;
-typedef struct w_file{
-    char* filename;
+typedef struct{
     int hash;
-}w_file;
+    char* filename;
+}s_file;
+
 struct node{ // every node is a commit
     char* commitid;
     char* message;
     node* last_node;
     int size;
-    w_file* files;
+    s_file* files;
 };
 
 typedef struct{ // branch
@@ -22,14 +22,11 @@ typedef struct{ // branch
     int size;
 }branch;
 
-typedef struct{
-    int hash;
-    char* filename;
-    char* content;
-}s_file;
+
+
 typedef struct{ // current focus place
     int file_num;
-    w_file* folder;
+    s_file* folder;
 }working_space;
 
 
@@ -37,7 +34,6 @@ typedef struct{ // current focus place
 typedef struct{
     branch** branches;
     int n_branches;
-    branch* head;
     working_space* ws;
 }help;
 
@@ -55,7 +51,6 @@ void *svc_init(void) {
     h->branches[0]->m = NULL;
     h->n_branches = 1;
 
-    h->head = h->branches[0];
 
     h->ws = (working_space*)malloc(sizeof(working_space));
     h->ws->file_num= 0;
@@ -67,33 +62,25 @@ void cleanup(void *helper) {
     // TODO: Implement
     help* h = (help*)helper;
     for(int i=0;i<h->ws->file_num;i++) {
+        free(h->ws->folder[i].content);
         free(h->ws->folder[i].filename);
     }
     free(h->ws->folder);
     free(h->ws);
-
 
     for(int i =h->n_branches-1;i>=0;i--) {
         free(h->branches[i]->branchname);
         for(int j =h->branches[i]->size-1;j>0;j++) {//keep every first node of branch
             free(h->branches[i]->m[j]->commitid);
             free(h->branches[i]->m[j]->message);
-            for(int x = 0;x<h->branches[i]->m[j]->size;x++){
-                free(h->branches[i]->m[j]->files[x].filename);
-            }
-            free(h->branches[i]->m[j]->files);
             free(h->branches[i]->m[j]);
         }
     }
     if(h->branches[0]->m!=NULL){
         free(h->branches[0]->m[0]->commitid); //delete the firstnode in master
         free(h->branches[0]->m[0]->message);
-        for(int i = 0;i>h->branches[0]->m[0]->size;i++){
-            free(h->branches[0]->m[0]->files[i].filename);
-        }
-        free(h->branches[0]->m[0]->files);
     }
-    for(int i=0;i<h->n_branches;i++){//delete the branch
+    for(int i=0;i<h->n_branches;i++){
         free(h->branches[i]->m);
         free(h->branches[i]);
     }
@@ -126,89 +113,16 @@ int hash_file(void *helper, char *file_path) {
     return hash;
 }
 
-float sort_num(char* s) {
-    float num = 0;
-    float level = 1;
-    for(int i = 0;i<strlen(s);i++){//the length of sa
-        num = num + (s[i]/level);
-        level = level*10;
-    }
-    return num;
-}
-void swap(w_file* a,w_file*b) {
-    char* temp;
-    temp = a->filename;
-    a->filename = b->filename;
-    b->filename = temp;
-    int tempnum;
-    tempnum = a->hash;
-    a->hash = b->hash;
-    b->hash = tempnum;
-}
-void sort_s_file(working_space* ws) {
-    for(int i = 0;i<ws->file_num;i++) {
-        for(int j = i;j<ws->file_num;j++) {
-            if(sort_num(ws->folder[i].filename)>sort_num(ws->folder[j].filename)){
-                swap(&ws->folder[i],&ws->folder[j]);
-            }
-        }
-    }
-}
-
 char *svc_commit(void *helper, char *message) {
-
-
+    // TODO: Implement
+    //get commit id
+    int id = 0;
+    for(int i = 0;i<strlen(message);i++) {
+        id = (id+message[i])%1000;
+    }
+    
+    return NULL;
 }
-//     // TODO: Implement
-//     //get commit id
-//     help* h = (help*)helper;
-//     char* result = NULL;
-//     int id = 0;
-//     for(int i = 0;i<strlen(message);i++) {
-//         id = (id+message[i])%1000;
-//     }
-//     if(h->head->m==NULL){//init, first commit 
-//         h->head->m = (node**)malloc(sizeof(node*)); //make a node for commit
-//         h->head->m[0] = (node*)malloc(sizeof(node));
-//         h->head->m[0]->size = h->ws->file_num; //copy n_files
-//         h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
-//         strcpy(h->head->m[0]->message,message);//copy message
-//         h->head->m[0]->last_node =NULL; //set the last node
-//         h->head->m[0]->files = (w_file*)malloc(h->head->m[0]->size*sizeof(w_file));//create memory for weak_file
-//         sort_s_file(h->ws);
-//         id = 0;
-//         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in 
-//             id+=376591;
-//             for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
-//                 //id = (id * (byte % 37)) % 15485863 + 1;
-//                 id = (id * (h->ws->folder[i].filename[j]%37) ) % 15485863 + 1;
-//             }
-//         }
-//         result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
-//         itoa(id,result,16);
-//         h->head->m[0]->commitid = result; //set the commit id
-//     }else{
-
-//         //when it is not the first add
-//     }
-
-//     if(_access(result,0)==-1) { // create the folder for this commit
-//         _mkdir(result);
-//     }
-
-//     // FILE* fout = NULL;
-//     // for(int i = 0;i<h->ws->file_num;i++) {
-//     //     char * temp = (char*)malloc(sizeof(char)*(8+strlen(h->ws->folder[i].filename)));
-//     //     strcpy(temp,result);
-//     //     strcat(temp,"\\");
-//     //     strcat(temp,h->ws->folder[i].filename);
-//     //     fout = fopen(temp,"w");
-//     //     fputs(h->ws->folder[i].content,fout);
-//     //     fclose(fout);
-//     //     free(temp);
-//     // }
-//     return result;
-
 
 void *get_commit(void *helper, char *commit_id) {
     // TODO: Implement
@@ -264,7 +178,7 @@ int svc_add(void *helper, char *file_name) {
     }
     if(exist == -1) {//if file do not exist, put it in
         h->ws->file_num++;
-        h->ws->folder = (w_file*)realloc(h->ws->folder,sizeof(w_file)*h->ws->file_num);
+        h->ws->folder = (s_file*)realloc(h->ws->folder,sizeof(s_file)*h->ws->file_num);
         //copy the file name 
         h->ws->folder[h->ws->file_num-1].filename = (char*)malloc(sizeof(char)*(strlen(file_name)+1));
         strcpy(h->ws->folder[h->ws->file_num-1].filename,file_name);
@@ -298,7 +212,7 @@ int svc_rm(void *helper, char *file_name) {
             h->ws->folder[i-1] = h->ws->folder[i]; 
         }
         h->ws->file_num--;
-        h->ws->folder = (w_file*)realloc(h->ws->folder,h->ws->file_num*sizeof(w_file));
+        h->ws->folder = (s_file*)realloc(h->ws->folder,h->ws->file_num*sizeof(s_file));
     }
     return hash;
 }
@@ -312,4 +226,3 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     // TODO: Implement
     return NULL;
 }
-
