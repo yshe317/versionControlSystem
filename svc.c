@@ -209,7 +209,8 @@ struct changing* changes(node* n,working_space* ws,int* num){
 }
 void save_file(node* n,working_space* ws){
     for(int i = 0;i<ws->file_num;i++) {
-        n->files[i].filename = (char*)malloc(sizeof(char)*(strlen(ws->folder[i].filename)+1));
+        int temp = strlen(ws->folder[i].filename)+1;
+        n->files[i].filename = (char*)malloc(sizeof(char)*temp);
         strcpy(n->files[i].filename,ws->folder[i].filename);
         n->files[i].hash = ws->folder[i].hash;
     }
