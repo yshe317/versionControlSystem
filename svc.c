@@ -130,12 +130,13 @@ int hash_file(void *helper, char *file_path) {
     return hash;
 }
 long double sort_num(char* s) {
-    long double num = 0;
-    float level = 1;
+    long double num = 0.00;
+    long double level = 100000;
     for(int i = 0;i<strlen(s);i++){//the length of sa
-        num = num + (s[i]/level);
-        level = level*100;
+        num = num + ((long double)s[i]/level);
+        level = level*10;
     }
+    //printf("%s:  <%lf>\n",s,num);
     return num;
 }
 void swap(s_file* a,s_file*b) {
@@ -245,7 +246,6 @@ char *svc_commit(void *helper, char *message) {
         for(int i=0;i<h->ws->file_num;i++) {
             printf("%s\n",h->ws->folder[i].filename);
         }
-        id = 0;
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in 
             id+=376591;
             for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
