@@ -175,7 +175,9 @@ struct changing* changes(node* n,working_space* ws,int* num){
     for(;i<ws->file_num&&j<n->size;) {
         (*num)++;
         result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
+        
         if(strcmp(ws->folder[i].filename,n->files[j].filename)==0) {
+            ws->folder[i].hash = hash_file(NULL,ws->folder[i].filename);
             //when two file is the same 
             if(ws->folder[i].hash==n->files[j].hash) {
                 //keep same 
@@ -271,22 +273,26 @@ char *svc_commit(void *helper, char *message) {
         //when it is not the first time commit
         sort_s_file(h->ws);
         node* lastcommit = h->head->m[h->head->size-1];
+        
         int len;
         int same = 1;
         struct changing* change = changes(lastcommit,h->ws,&len); 
         for(int i =0;i<len;i++) {
+            
             if(change[i].w!=0) {
+                
                 same = 0;
                 if(change[i].w==1) {//modi
                     id = id + 9573681;
                 }else if(change[i].w == 2) {//deleting
+                    //printf("the name is : %s and the change is %d\n",change[i].filename,change[i].w);
                     id = id + 85973;
                 }else if(change[i].w == 3) {//adding
                     id = id + 376591;
                 }
                 for(int j = 0;j<strlen(change[i].filename);j++) {
                     id = (id*(change[i].filename[j]%37))%15485863+1;
-                }
+                }   
             }
         }
         if(same == 1) {//if everything same, return NULL
