@@ -2,7 +2,8 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-#include<ctype.h>
+#include<sys/stat.h>
+
 typedef struct node node;
 typedef struct{
     int hash;
@@ -16,9 +17,14 @@ struct node{ // every node is a commit
     int size;
     s_file* files;
 };
+struct changing{
+    int w;
+    char* filename;
+};
 
 typedef struct{ // branch
     char* branchname;
+    node* lastnode;
     node** m;
     int size;
 }branch;
@@ -51,9 +57,9 @@ void *svc_init(void) {
     strcpy(h->branches[0]->branchname,"master\0");
     h->branches[0]->size = 0;
     h->branches[0]->m = NULL;
+    h->branches[0]->lastnode =NULL;
     h->n_branches = 1;
-
-
+    h->head = h->branches[0];
     h->ws = (working_space*)malloc(sizeof(working_space));
     h->ws->file_num= 0;
     h->ws->folder = NULL;
@@ -71,15 +77,11 @@ void cleanup(void *helper) {
 
     for(int i =h->n_branches-1;i>=0;i--) {
         free(h->branches[i]->branchname);
-        for(int j =h->branches[i]->size-1;j>0;j++) {//keep every first node of branch
+        for(int j =h->branches[i]->size;j>=0;j--) {//keep every first node of branch
             free(h->branches[i]->m[j]->commitid);
             free(h->branches[i]->m[j]->message);
             free(h->branches[i]->m[j]);
         }
-    }
-    if(h->branches[0]->m!=NULL){
-        free(h->branches[0]->m[0]->commitid); //delete the firstnode in master
-        free(h->branches[0]->m[0]->message);
     }
     for(int i=0;i<h->n_branches;i++){
         free(h->branches[i]->m);
@@ -113,12 +115,12 @@ int hash_file(void *helper, char *file_path) {
     fclose(fin);
     return hash;
 }
-float sort_num(char* s) {
-    float num = 0;
+long double sort_num(char* s) {
+    long double num = 0;
     float level = 1;
     for(int i = 0;i<strlen(s);i++){//the length of sa
         num = num + (s[i]/level);
-        level = level*10;
+        level = level*100;
     }
     return num;
 }
@@ -134,16 +136,77 @@ void swap(s_file* a,s_file*b) {
 }
 void sort_s_file(working_space* ws) {
     for(int i = 0;i<ws->file_num;i++) {
-        for(int j = i;j<ws->file_num;j++) {
+        for(int j = i+1;j<ws->file_num;j++) {
+            printf("<%f\n",sort_num(ws->folder[i].filename));
+            printf("%f>\n",sort_num(ws->folder[j].filename));
             if(sort_num(ws->folder[i].filename)>sort_num(ws->folder[j].filename)){
                 swap(&ws->folder[i],&ws->folder[j]);
             }
         }
     }
 }
+struct changing* changes(node* n,working_space* ws,int* num){
+    struct changing* result = NULL;
+    (*num) = 0;
+    int j = 0;
+    int i = 0;
+    for(;i<ws->file_num&&j<n->size;) {
+        (*num)++;
+        result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
+        if(strcmp(ws->folder[i].filename,n->files[j].filename)==0) {
+            //when two file is the same 
+            if(ws->folder[i].hash==n->files[j].hash) {
+                //keep same 
+                result[(*num)-1].w = 0;
+            }else{
+                //modifi
+                result[(*num)-1].w = 1;
+            }
+            result[(*num)-1].filename = n->files[j].filename;
+            i++;
+            j++;
+        }else if(sort_num(ws->folder[i].filename)>sort_num(n->files[j].filename)) {
+            //delete 
+            result[(*num)-1].filename = n->files[j].filename;
+            result[(*num)-1].w = 2;
+            j++;
+        }else if(sort_num(ws->folder[i].filename)<sort_num(n->files[j].filename)) {
+            //adding
+            result[(*num)-1].filename = ws->folder[i].filename;
+            result[(*num)-1].w = 3;
+            i++;
+        }
+    }
+    if(j == n->size) {
+        for(;i<ws->file_num;i++) {
+            (*num)++;
+            result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
+            result[(*num)-1].filename = ws->folder[i].filename;
+            result[(*num)-1].w = 3;
+        }
+        //the remain in ws is adding
+    }else{
+        //the remain in node is deleting
+        for(;j<n->size;j++) {
+            (*num)++;
+            result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
+            result[(*num)-1].filename = n->files[j].filename;
+            result[(*num)-1].w = 2;
+        }
+    }
+    return result;
+}
+void save_file(node* n,working_space* ws){
+    for(int i = 0;i<ws->file_num;i++) {
+        n->files[i].filename = (char*)malloc(sizeof(char)*(strlen(ws->folder[i].filename)+1));
+        strcpy(n->files[i].filename,ws->folder[i].filename);
+        n->files[i].hash = ws->folder[i].hash;
+    }
+}
 
 char *svc_commit(void *helper, char *message) {
     // TODO: Implement
+    if(message == NULL) {return NULL;}
     //get commit id
     help* h = (help*)helper;
     char* result = NULL;
@@ -151,15 +214,22 @@ char *svc_commit(void *helper, char *message) {
     for(int i = 0;i<strlen(message);i++) {
         id = (id+message[i])%1000;
     }
+    
     if(h->head->m==NULL){//init, first commit 
+
         h->head->m = (node**)malloc(sizeof(node*)); //make a node for commit
+        h->head->size++;
         h->head->m[0] = (node*)malloc(sizeof(node));
         h->head->m[0]->size = h->ws->file_num; //copy n_files
         h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[0]->message,message);//copy message
         h->head->m[0]->last_node =NULL; //set the last node
-        h->head->m[0]->files = (s_file*)malloc(h->head->m[0]->size*sizeof(s_file));//create memory for weak_file
+        h->head->m[0]->files = (s_file*)malloc(h->head->m[0]->size*sizeof(s_file));//create memory for files
         sort_s_file(h->ws);
+        save_file(h->head->m[0],h->ws);
+        for(int i=0;i<h->ws->file_num;i++) {
+            printf("%s\n",h->ws->folder[i].filename);
+        }
         id = 0;
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in 
             id+=376591;
@@ -171,7 +241,46 @@ char *svc_commit(void *helper, char *message) {
         result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
         sprintf(result,"%x",id);
         h->head->m[0]->commitid = result; //set the commit id
+    }else{
+        //when it is not the first time commit
+        sort_s_file(h->ws);
+        node* lastcommit = h->head->m[h->head->size-1];
+        int len;
+        int same = 1;
+        struct changing* change = changes(lastcommit,h->ws,&len); 
+        for(int i =0;i<len;i++) {
+            if(change[i].w!=0) {
+                same = 0;
+                if(change[i].w==1) {//modi
+                    id = id + 9573681;
+                }else if(change[i].w == 2) {//deleting
+                    id = id + 85973;
+                }else if(change[i].w == 3) {//adding
+                    id = id + 376591;
+                }
+                for(int j = 0;j<strlen(change[i].filename);j++) {
+                    id = (id*(change[i].filename[j]%37))%15485863+1;
+                }
+            }
+        }
+        if(same == 1) {//if everything same, return NULL
+            return NULL;
+        }
+        //if can input;
+        h->head->size++;
+        h->head->m = (node**)malloc(sizeof(node*)*(h->head->size));
+        h->head->m[h->head->size-1] = (node*)malloc(sizeof(node));
+        h->head->m[h->head->size-1]->size = h->ws->file_num;
+        h->head->m[h->head->size-1]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
+        strcpy(h->head->m[h->head->size-1]->message,message);
+        result = (char*)malloc(7*sizeof(char));
+        sprintf(result,"%x",id);
+        h->head->m[h->head->size-1]->commitid = result; 
+        h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
+        save_file(h->head->m[h->head->size-1],h->ws);
+        free(change);
     }
+    
     return result;
 }
 
