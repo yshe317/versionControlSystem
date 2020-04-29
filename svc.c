@@ -90,6 +90,7 @@ void cleanup(void *helper) {
             node* e = h->branches[i]->m[j];
             for(int x = 0;x <e->size;x++) {
                 free(h->branches[i]->m[j]->files[x].filename);
+                free(h->branches[i]->m[j]->message);
             }
             free(h->branches[i]->m[j]->files);
             free(h->branches[i]->m[j]->message);
@@ -287,7 +288,7 @@ char *svc_commit(void *helper, char *message) {
         strcpy(h->head->m[h->head->size-1]->message,message);
         h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
         save_file(h->head->m[h->head->size-1],h->ws);
-        
+
         result = (char*)malloc(7*sizeof(char));
         sprintf(result,"%x",id);
         h->head->m[h->head->size-1]->commitid = result; 
