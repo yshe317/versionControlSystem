@@ -89,6 +89,7 @@ void cleanup(void *helper) {
         for(int j = 0;j < h->branches[i]->size;j++) {
             node* e = h->branches[i]->m[j];
             free(e->message);
+            free(e->commitid);
             for(int x = 0;x <e->size;x++) {
                 free(h->branches[i]->m[j]->files[x].filename);    
             }
