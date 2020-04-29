@@ -290,6 +290,7 @@ char *svc_commit(void *helper, char *message) {
             }
         }
         if(same == 1) {//if everything same, return NULL
+            free(change);
             return NULL;
         }
         //if can input;
