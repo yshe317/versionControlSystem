@@ -94,6 +94,7 @@ void cleanup(void *helper) {
             free(h->branches[i]->m[j]->message);
             free(h->branches[i]->m[j]);
         }
+        free(h->branches[i]->branchname);
         free(h->branches[i]->m);
         free(h->branches[i]);
     }
