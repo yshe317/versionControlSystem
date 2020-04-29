@@ -289,6 +289,7 @@ char *svc_commit(void *helper, char *message) {
         sprintf(result,"%x",id);
         h->head->m[h->head->size-1]->commitid = result; 
         h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
+        h->head->m[h->head->size-1]->files = (s_file*)malloc(h->head->m[h->head->size-1]->size*sizeof(s_file));
         save_file(h->head->m[h->head->size-1],h->ws);
         free(change);
     }
