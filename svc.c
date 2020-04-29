@@ -78,7 +78,7 @@ void cleanup(void *helper) {
     for(int i =h->n_branches-1;i>=0;i--) {
         free(h->branches[i]->branchname);
         for(int j =h->branches[i]->size;j>=0;j--) {//keep every first node of branch
-            free(h->branches[i]->m[j]->commitid);
+            //free(h->branches[i]->m[j]->commitid);
             free(h->branches[i]->m[j]->message);
             free(h->branches[i]->m[j]);
         }
