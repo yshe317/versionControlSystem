@@ -143,7 +143,7 @@ unsigned long long int sort_num(char* s) {
             level = level/100;
         }
     }
-    printf("%s:  <%lld>\n",s,num);
+    //printf("%s:  <%lld>\n",s,num);
     return num;
 }
 void swap(s_file* a,s_file*b) {
@@ -253,9 +253,9 @@ char *svc_commit(void *helper, char *message) {
 
         sort_s_file(h->ws);
         save_file(h->head->m[0],h->ws);
-        for(int i=0;i<h->ws->file_num;i++) {
-            printf("%s\n",h->ws->folder[i].filename);
-        }
+        // for(int i=0;i<h->ws->file_num;i++) {
+        //     printf("%s\n",h->ws->folder[i].filename);
+        // }
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in 
             id+=376591;
             for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
