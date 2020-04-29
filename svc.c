@@ -88,7 +88,7 @@ void cleanup(void *helper) {
     for(int i=0;i < h->n_branches;i++) {
         for(int j = 0;j < h->branches[i]->size;j++) {
             node* e = h->branches[i]->m[j];
-            for(int x = 0;x < h->branches[i]->m[j]->size;x++) {
+            for(int x = 0;x <e->size;x++) {
                 free(h->branches[i]->m[j]->files[x].filename);
             }
             free(h->branches[i]->m[j]->files);
