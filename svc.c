@@ -129,14 +129,21 @@ int hash_file(void *helper, char *file_path) {
     fclose(fin);
     return hash;
 }
-long double sort_num(char* s) {
-    long double num = 0.00;
-    long double level = 100000;
+unsigned long long int sort_num(char* s) {
+    unsigned long long int num = 0.00;
+    unsigned long long int level = 10000000000000000;
+    //65-122
     for(int i = 0;i<strlen(s);i++){//the length of sa
-        num = num + ((long double)s[i]/level);
-        level = level*10;
+        if(s[i]>=65 && s[i]<=90) {
+            
+            num = num + ((s[i]-65)*level);
+            level = level/100;
+        }else if(s[i]>=97 && s[i]<=122) {
+            num = num + ((s[i]-97)*level);
+            level = level/100;
+        }
     }
-    //printf("%s:  <%lf>\n",s,num);
+    printf("%s:  <%lld>\n",s,num);
     return num;
 }
 void swap(s_file* a,s_file*b) {
@@ -234,6 +241,9 @@ char *svc_commit(void *helper, char *message) {
     }
     
     if(h->head->m==NULL){//init, first commit 
+        if(h->ws->file_num==0){
+            return NULL;
+        }
         h->head->size++;
         h->head->m = (node**)malloc(sizeof(node*)); //make a node for commit
         h->head->m[0] = (node*)malloc(sizeof(node));
