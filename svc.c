@@ -68,22 +68,32 @@ void *svc_init(void) {
 
 void cleanup(void *helper) {
     // TODO: Implement
+    //free the working space
     help* h = (help*)helper;
     for(int i=0;i<h->ws->file_num;i++) {
         free(h->ws->folder[i].filename);
     }
     free(h->ws->folder);
     free(h->ws);
+    
 
-    for(int i =h->n_branches-1;i>=0;i--) {
-        free(h->branches[i]->branchname);
-        for(int j =h->branches[i]->size;j>=0;j--) {//keep every first node of branch
-            //free(h->branches[i]->m[j]->commitid);
+    // for(int i =h->n_branches-1;i>=0;i--) {
+    //     free(h->branches[i]->branchname);
+    //     for(int j =h->branches[i]->size;j>=0;j--) {//keep every first node of branch
+    //         free(h->branches[i]->m[j]->commitid);
+    //         free(h->branches[i]->m[j]->message);
+    //         free(h->branches[i]->m[j]);
+    //     }
+    // }
+    for(int i=0;i<h->n_branches;i++) {
+        for(int j = 0;j<h->branches[i]->size;j++) {
+            for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
+                free(h->branches[i]->m[j]->files[x].filename);
+            }
+            free(h->branches[i]->m[j]->files);
             free(h->branches[i]->m[j]->message);
             free(h->branches[i]->m[j]);
         }
-    }
-    for(int i=0;i<h->n_branches;i++){
         free(h->branches[i]->m);
         free(h->branches[i]);
     }
