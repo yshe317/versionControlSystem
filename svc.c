@@ -209,6 +209,8 @@ struct changing* changes(node* n,working_space* ws,int* num){
     return result;
 }
 void save_file(node* n,working_space* ws){
+    n->size = ws->file_num;
+    n->files = (s_file*)malloc(sizeof(s_file)*n->size);
     for(int i = 0;i<ws->file_num;i++) {
         int temp = strlen(ws->folder[i].filename)+1;
         n->files[i].filename = (char*)malloc(sizeof(char)*temp);
@@ -229,15 +231,13 @@ char *svc_commit(void *helper, char *message) {
     }
     
     if(h->head->m==NULL){//init, first commit 
-
-        h->head->m = (node**)malloc(sizeof(node*)); //make a node for commit
         h->head->size++;
+        h->head->m = (node**)malloc(sizeof(node*)); //make a node for commit
         h->head->m[0] = (node*)malloc(sizeof(node));
-        h->head->m[0]->size = h->ws->file_num; //copy n_files
         h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[0]->message,message);//copy message
         h->head->m[0]->last_node =NULL; //set the last node
-        h->head->m[0]->files = (s_file*)malloc(h->head->m[0]->size*sizeof(s_file));//create memory for files
+        
         sort_s_file(h->ws);
         save_file(h->head->m[0],h->ws);
         for(int i=0;i<h->ws->file_num;i++) {
@@ -281,9 +281,9 @@ char *svc_commit(void *helper, char *message) {
         }
         //if can input;
         h->head->size++;
-        h->head->m = (node**)malloc(sizeof(node*)*(h->head->size));
+        h->head->m = (node**)realloc(h->head->m,sizeof(node*)*(h->head->size));
         h->head->m[h->head->size-1] = (node*)malloc(sizeof(node));
-        h->head->m[h->head->size-1]->size = h->ws->file_num;
+        h->head->m[h->head->size-1]->size = h->ws->file_num; //set size
         h->head->m[h->head->size-1]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[h->head->size-1]->message,message);
         result = (char*)malloc(7*sizeof(char));
