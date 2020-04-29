@@ -260,9 +260,10 @@ char *svc_commit(void *helper, char *message) {
             id+=376591;
             for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
                 //id = (id * (byte % 37)) % 15485863 + 1;
-                id = (id * (h->ws->folder[i].filename[j]%37) ) % 15485863 + 1;
+                id = (id * ((unsigned int)(h->ws->folder[i].filename[j])%37)%15485863+1 );
             }
         }
+        //printf("\n%d\n",id);
         result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
         sprintf(result,"%x",id);
         h->head->m[0]->commitid = result; //set the commit id
