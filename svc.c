@@ -237,7 +237,7 @@ char *svc_commit(void *helper, char *message) {
         h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[0]->message,message);//copy message
         h->head->m[0]->last_node =NULL; //set the last node
-        
+
         sort_s_file(h->ws);
         save_file(h->head->m[0],h->ws);
         for(int i=0;i<h->ws->file_num;i++) {
@@ -283,15 +283,14 @@ char *svc_commit(void *helper, char *message) {
         h->head->size++;
         h->head->m = (node**)realloc(h->head->m,sizeof(node*)*(h->head->size));
         h->head->m[h->head->size-1] = (node*)malloc(sizeof(node));
-        h->head->m[h->head->size-1]->size = h->ws->file_num; //set size
         h->head->m[h->head->size-1]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[h->head->size-1]->message,message);
+        h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
+        save_file(h->head->m[h->head->size-1],h->ws);
+        
         result = (char*)malloc(7*sizeof(char));
         sprintf(result,"%x",id);
         h->head->m[h->head->size-1]->commitid = result; 
-        h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
-        h->head->m[h->head->size-1]->files = (s_file*)malloc(h->head->m[h->head->size-1]->size*sizeof(s_file));
-        save_file(h->head->m[h->head->size-1],h->ws);
         free(change);
     }
     
