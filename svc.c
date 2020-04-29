@@ -88,12 +88,12 @@ void cleanup(void *helper) {
     for(int i=0;i < h->n_branches;i++) {
         for(int j = 0;j < h->branches[i]->size;j++) {
             node* e = h->branches[i]->m[j];
+            free(e->message);
             for(int x = 0;x <e->size;x++) {
-                free(h->branches[i]->m[j]->files[x].filename);
-                free(h->branches[i]->m[j]->message);
+                free(h->branches[i]->m[j]->files[x].filename);    
             }
             free(h->branches[i]->m[j]->files);
-            free(h->branches[i]->m[j]->message);
+            
             free(h->branches[i]->m[j]);
         }
         free(h->branches[i]->branchname);
