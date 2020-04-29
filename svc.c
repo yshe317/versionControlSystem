@@ -137,8 +137,8 @@ void swap(s_file* a,s_file*b) {
 void sort_s_file(working_space* ws) {
     for(int i = 0;i<ws->file_num;i++) {
         for(int j = i+1;j<ws->file_num;j++) {
-            printf("<%f\n",sort_num(ws->folder[i].filename));
-            printf("%f>\n",sort_num(ws->folder[j].filename));
+            // printf("<%f\n",sort_num(ws->folder[i].filename));
+            // printf("%f>\n",sort_num(ws->folder[j].filename));
             if(sort_num(ws->folder[i].filename)>sort_num(ws->folder[j].filename)){
                 swap(&ws->folder[i],&ws->folder[j]);
             }
