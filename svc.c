@@ -19,6 +19,7 @@ struct node{ // every node is a commit
     char* message;
     node* last_node;
     int size;
+    int n_change;
     struct changing* changes;
     s_file* files;
 
@@ -262,7 +263,7 @@ char *svc_commit(void *helper, char *message) {
         h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[0]->message,message);//copy message
         h->head->m[0]->last_node = NULL; //set the last node
-        
+        h->head->m[0]->n_change = h->ws->file_num;
         sort_s_file(h->ws);
         save_file(h->head->m[0],h->ws);
         h->head->m[0] -> changes = (struct changing*)malloc(sizeof(struct changing)*h->ws->file_num);
@@ -330,7 +331,24 @@ char *svc_commit(void *helper, char *message) {
         result = (char*)malloc(7*sizeof(char));
         sprintf(result,"%06x",id);
         h->head->m[h->head->size-1]->commitid = result; 
-        h->head->m[h->head->size-1]->changes = change;
+        h->head->m[h->head->size-1] ->n_change = len;
+        h->head->m[h->head->size-1]->changes = (struct changing*)malloc(sizeof(struct changing)*len);
+        
+        for(int i = 0;i<len;i++) {
+            h->head->m[h->head->size-1]->changes[i].w = change[i].w;
+            if(change[i].w != 3) {
+                h->head->m[h->head->size-1]->changes[i].filename = change[i].filename;
+            }else{
+                for(int j = 0;j<h->head->m[h->head->size-1]->size;j++) {
+                    if(strcmp(change[i].filename, h->head->m[h->head->size-1]->files[j].filename) == 0) {
+                        h->head->m[h->head->size-1]->changes[i].filename = h->head->m[h->head->size-1]->files[j].filename;
+                        break;
+                    }
+                }
+            }
+        }
+
+        free(change)
     }
     
     return result;
