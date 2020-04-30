@@ -359,7 +359,7 @@ int svc_branch(void *helper, char *branch_name) {
     }
     //traverse branches
     help* h = (help*)helper;
-    for(int i = 0;i<h->n_branches;i++) {
+    for(int i = 1;i<h->n_branches;i++) {
         if(strcmp(h->branches[i]->branchname,branch_name) == 0) {
             return -2;
         }
@@ -437,6 +437,7 @@ char **list_branches(void *helper, int *n_branches) {
     for(int i = 0;i<(*n_branches);i++) {
         result = (char**)realloc(result,sizeof(char*)*(i+1));
         result[i] = h->branches[i]->branchname;
+        printf("%s\n",result[i]);
     }
     return result;
 }
