@@ -396,6 +396,7 @@ int svc_checkout(void *helper, char *branch_name) {
     struct changing* temp = changes(h->head->m[h->head->size-1],h->ws,&length);
     for(int i = 0;i<length;i++) {
         if(temp[i].w != 0) {
+            free(temp);
             return -2;
         }
     }
