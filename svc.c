@@ -393,7 +393,8 @@ int svc_checkout(void *helper, char *branch_name) {
 
     //check if change with out commit
     int length;
-    struct changing* temp = changes(h->head->m[h->head->size-1],h->ws,&length);
+    node* s = h->head->m[h->head->size-1];
+    struct changing* temp = changes(s,h->ws,&length);
     for(int i = 0;i<length;i++) {
         if(temp[i].w != 0) {
             free(temp);
