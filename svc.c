@@ -353,6 +353,8 @@ int svc_branch(void *helper, char *branch_name) {
             //while the letter is a-z , A-Z;
         }else if(branch_name[i] == 47||branch_name[i]==45||branch_name[i]==95) {
             //when letter is - / _
+        }else if(branch_name[i]<=57&&branch_name[i]>=48) {
+            //when letter is 0-9
         }else{  
             return -1;
         }
