@@ -436,9 +436,7 @@ char **list_branches(void *helper, int *n_branches) {
     char** result = NULL;
     for(int i = 0;i<(*n_branches);i++) {
         result = (char**)realloc(result,sizeof(char*)*(i+1));
-        result[i] = (char*)malloc(sizeof(char)*(1+strlen(h->branches[i]->branchname)));
-        strcpy(result[i],h->branches[i]->branchname);
-        
+        result[i] = h->branches[i]->branchname;
     }
     return result;
 }
