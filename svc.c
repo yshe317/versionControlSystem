@@ -278,8 +278,12 @@ char *svc_commit(void *helper, char *message) {
     }else{
         //when it is not the first time commit
         sort_s_file(h->ws);
-        node* lastcommit = h->head->m[h->head->size-1];
-        
+        node* lastcommit;
+        if(h->head->size == 0) {
+            lastcommit = h->head->lastnode;
+        }else{
+            lastcommit = h->head->m[h->head->size-1];
+        }
         int len;
         int same = 1;
         struct changing* change = changes(lastcommit,h->ws,&len); 
