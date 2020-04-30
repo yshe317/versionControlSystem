@@ -36,8 +36,6 @@ typedef struct{ // current focus place
     s_file* folder;
 }working_space;
 
-
-
 typedef struct{
     branch** branches;
     int n_branches;
@@ -129,6 +127,7 @@ int hash_file(void *helper, char *file_path) {
     fclose(fin);
     return hash;
 }
+
 unsigned long long int sort_num(char* s) {
     unsigned long long int num = 0.00;
     unsigned long long int level = 10000000000000000;
@@ -167,7 +166,7 @@ void sort_s_file(working_space* ws) {
         }
     }
 }
-struct changing* changes(node* n,working_space* ws,int* num){
+struct changing* changes(node* n,working_space* ws,int* num) {
     struct changing* result = NULL;
     (*num) = 0;
     int j = 0;
@@ -228,7 +227,7 @@ struct changing* changes(node* n,working_space* ws,int* num){
     }
     return result;
 }
-void save_file(node* n,working_space* ws){
+void save_file(node* n,working_space* ws) {
     n->size = ws->file_num;
     n->files = (s_file*)malloc(sizeof(s_file)*n->size);
     for(int i = 0;i<ws->file_num;i++) {
@@ -238,7 +237,6 @@ void save_file(node* n,working_space* ws){
         n->files[i].hash = ws->folder[i].hash;
     }
 }
-
 char *svc_commit(void *helper, char *message) {
     // TODO: Implement
     if(message == NULL) {return NULL;}
@@ -336,11 +334,30 @@ void *get_commit(void *helper, char *commit_id) {
 
 char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     // TODO: Implement
+    if(n_prev == NULL) { return NULL; }
+    if(commit == NULL) { return NULL; } 
+
     return NULL;
 }
 
 void print_commit(void *helper, char *commit_id) {
     // TODO: Implement
+    if(commit_id == NULL) {
+        printf("%s",commit_id);
+    }
+    help* h = (help*)helper;
+    int can_not_find = 1;
+    for(int i=0;i<h->n_branches;i++) {
+        for(int j = 0; j < h->branches[i]->size; j++) {
+            if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
+                can_not_find = 0;
+                
+            }
+        }
+    }
+    if(can_not_find == 1) {
+        printf("%s",commit_id);
+    }
 }
 
 int svc_branch(void *helper, char *branch_name) {
@@ -512,5 +529,14 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
-    return NULL;
+    if(branch_name == NULL) { return NULL; }
+    help* h = (help*)helper;
+    if(strcmp(h->head->branchname, branch_name) == 0) { return NULL; }
+    int can_not_find = 1;
+    for(int i = 0; i < h->n_branches; i++) {
+        if(strcmp(h->branches[i]->branchname, branch_name) == 0) {
+            can_not_find = 0;
+        }
+    }
+    if(can_not_find == 1) { return NULL; }
 }
