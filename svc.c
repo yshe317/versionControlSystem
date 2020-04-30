@@ -10,17 +10,20 @@ typedef struct{
     char* filename;
 }s_file;
 
+struct changing{
+    int w;
+    char* filename;
+};
 struct node{ // every node is a commit
     char* commitid;
     char* message;
     node* last_node;
     int size;
+    struct changing* changes;
     s_file* files;
+
 };
-struct changing{
-    int w;
-    char* filename;
-};
+
 
 typedef struct{ // branch
     char* branchname;
@@ -88,6 +91,7 @@ void cleanup(void *helper) {
             node* e = h->branches[i]->m[j];
             free(e->message);
             free(e->commitid);
+            free(e->changes);
             for(int x = 0;x <e->size;x++) {
                 free(h->branches[i]->m[j]->files[x].filename);    
             }
@@ -257,10 +261,15 @@ char *svc_commit(void *helper, char *message) {
         h->head->m[0] = (node*)malloc(sizeof(node));
         h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[0]->message,message);//copy message
-        h->head->m[0]->last_node =NULL; //set the last node
-
+        h->head->m[0]->last_node = NULL; //set the last node
+        
         sort_s_file(h->ws);
         save_file(h->head->m[0],h->ws);
+        h->head->m[0] -> changes = (struct changing*)malloc(sizeof(struct changing)*h->ws->file_num);
+        for(int i = 0;i<h->ws->file_num;i++) {
+            h->head->m[0]->changes[i].filename = h->head->m[0]->files[i].filename;
+            h->head->m[0]->changes[i].w = 3;
+        }
         // for(int i=0;i<h->ws->file_num;i++) {
         //     printf("%s\n",h->ws->folder[i].filename);
         // }
@@ -317,11 +326,11 @@ char *svc_commit(void *helper, char *message) {
         strcpy(h->head->m[h->head->size-1]->message,message);
         h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
         save_file(h->head->m[h->head->size-1],h->ws);
-
+        
         result = (char*)malloc(7*sizeof(char));
         sprintf(result,"%06x",id);
         h->head->m[h->head->size-1]->commitid = result; 
-        free(change);
+        h->head->m[h->head->size-1]->changes = change;
     }
     
     return result;
