@@ -351,7 +351,7 @@ void print_commit(void *helper, char *commit_id) {
         for(int j = 0; j < h->branches[i]->size; j++) {
             if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
                 can_not_find = 0;
-                
+
             }
         }
     }
@@ -539,4 +539,5 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         }
     }
     if(can_not_find == 1) { return NULL; }
+    return NULL;
 }
