@@ -389,6 +389,29 @@ int svc_checkout(void *helper, char *branch_name) {
     if(branch_name == NULL){
         return -1;
     }
+    help* h = (help*)helper;
+
+    //check if change with out commit
+    int length;
+    struct changing* temp = changes(h->head->m[h->head->size-1],h->ws,&length);
+    for(int i = 0;i<length;i++) {
+        if(temp[i].w != 0) {
+            return -2;
+        }
+    }
+    free(temp);
+
+    int can_not_find = 1;
+    for(int i = 0;i<h->n_branches;i++) {
+        if(strcmp(branch_name,h->branches[i]->branchname) == 0) {
+            can_not_find = 0;
+            h->head = h->branches[i];
+            return 0;
+        }
+    }
+    if(can_not_find == 1) {
+        return -1;
+    }
     return 0;
 }
 
