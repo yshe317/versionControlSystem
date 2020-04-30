@@ -250,7 +250,7 @@ char *svc_commit(void *helper, char *message) {
         id = (id+message[i])%1000;
     }
     
-    if(h->head->m==NULL){//init, first commit 
+    if(h->head->m==NULL && h->head->lastnode == NULL){//init, first commit 
         if(h->ws->file_num==0){
             return NULL;
         }
@@ -358,6 +358,29 @@ int svc_branch(void *helper, char *branch_name) {
         }
     }
     //traverse branches
+    help* h = (help*)helper;
+    for(int i = 0;i<h->n_branches;i++) {
+        if(strcmp(h->branches[i]->branchname,branch_name) == 0) {
+            return -2;
+        }
+    }
+    int length;
+    struct changing* temp = changes(h->head->m[h->head->size-1],h->ws,&length);
+    for(int i = 0;i<length;i++) {
+        if(temp[i].w != 0) {
+            return -3;
+        }
+    }
+    free(temp);
+    h->n_branches ++;
+    h->branches = (branch**)realloc(h->branches, sizeof(branch*)*h->n_branches );
+    h->branches[h->n_branches-1] = (branch*) malloc(sizeof(branch));
+    branch* focus = h->branches[h->n_branches-1];
+    focus->branchname = (char*)malloc(sizeof(char)*(strlen(branch_name)+1));
+    strcpy(focus->branchname,branch_name);
+    focus->lastnode = h->head->m[h->head->size-1];
+    focus->size = 0;
+    focus->m = NULL;    
     return 0;
 }
 
