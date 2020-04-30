@@ -275,7 +275,7 @@ char *svc_commit(void *helper, char *message) {
         }
         //printf("\n%d\n",id);
         result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
-        sprintf(result,"%x",id);
+        sprintf(result,"%06x",id);
         h->head->m[0]->commitid = result; //set the commit id
     }else{
         //when it is not the first time commit
@@ -317,7 +317,7 @@ char *svc_commit(void *helper, char *message) {
         save_file(h->head->m[h->head->size-1],h->ws);
 
         result = (char*)malloc(7*sizeof(char));
-        sprintf(result,"%x",id);
+        sprintf(result,"%06x",id);
         h->head->m[h->head->size-1]->commitid = result; 
         free(change);
     }
