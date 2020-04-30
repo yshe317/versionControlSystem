@@ -176,14 +176,22 @@ struct changing* changes(node* n,working_space* ws,int* num){
         (*num)++;
         result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
         
+        
         if(strcmp(ws->folder[i].filename,n->files[j].filename)==0) {
-            ws->folder[i].hash = hash_file(NULL,ws->folder[i].filename);
+            int t = hash_file(NULL,ws->folder[i].filename);
             //when two file is the same 
-            if(ws->folder[i].hash==n->files[j].hash) {
+            if(t!=-2) {
+                ws->folder[i].hash = t;
+            }
+            if(t==-2) {
+                result[(*num)-1].w = 0;
+            }else if(ws->folder[i].hash==n->files[j].hash) {
+                //printf("nochange");
                 //keep same 
                 result[(*num)-1].w = 0;
             }else{
                 //modifi
+                //printf("modified");
                 result[(*num)-1].w = 1;
             }
             result[(*num)-1].filename = n->files[j].filename;
@@ -319,6 +327,10 @@ char *svc_commit(void *helper, char *message) {
 
 void *get_commit(void *helper, char *commit_id) {
     // TODO: Implement
+    if(commit_id==NULL) { return NULL; }
+    help* h = (help*)helper;
+    //traverse branches
+
     return NULL;
 }
 
@@ -333,6 +345,19 @@ void print_commit(void *helper, char *commit_id) {
 
 int svc_branch(void *helper, char *branch_name) {
     // TODO: Implement
+    if(branch_name==NULL) { 
+        return -1;
+    }
+    for(int i = 0;i<strlen(branch_name);i++) {
+        if((branch_name[i]<=122&&branch_name[i]>=97)||(branch_name[i]<=90&&branch_name[i]>=65)) {
+            //while the letter is a-z , A-Z;
+        }else if(branch_name[i] == 47||branch_name[i]==45||branch_name[i]==95) {
+            //when letter is - / _
+        }else{  
+            return -1;
+        }
+    }
+    //traverse branches
     return 0;
 }
 
