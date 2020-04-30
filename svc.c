@@ -359,7 +359,7 @@ int svc_branch(void *helper, char *branch_name) {
     }
     //traverse branches
     help* h = (help*)helper;
-    for(int i = 1;i<h->n_branches;i++) {
+    for(int i = 0;i<h->n_branches;i++) {
         if(strcmp(h->branches[i]->branchname,branch_name) == 0) {
             return -2;
         }
