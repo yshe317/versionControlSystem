@@ -328,7 +328,7 @@ char *svc_commit(void *helper, char *message) {
 void *get_commit(void *helper, char *commit_id) {
     // TODO: Implement
     if(commit_id==NULL) { return NULL; }
-    help* h = (help*)helper;
+    //help* h = (help*)helper;
     //traverse branches
 
     return NULL;
