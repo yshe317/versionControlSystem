@@ -347,8 +347,7 @@ char *svc_commit(void *helper, char *message) {
                 }
             }
         }
-
-        free(change)
+        free(change);
     }
     
     return result;
