@@ -365,7 +365,12 @@ int svc_branch(void *helper, char *branch_name) {
         }
     }
     int length;
-    struct changing* temp = changes(h->head->m[h->head->size-1],h->ws,&length);
+    struct changing* temp;
+    if(h->head->size==0) {
+        temp = changes(h->head->lastnode,h->ws,&length);
+    }else{
+        temp = changes(h->head->m[h->head->size-1],h->ws,&length);
+    }
     for(int i = 0;i<length;i++) {
         if(temp[i].w != 0) {
             free(temp);
