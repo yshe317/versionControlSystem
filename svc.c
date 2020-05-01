@@ -148,11 +148,18 @@ void sort_s_file(working_space* ws) {
         for(int j = i+1;j<ws->file_num;j++) {
             // printf("<%f\n",sort_num(ws->folder[i].filename));
             // printf("%f>\n",sort_num(ws->folder[j].filename));
-            if(strcmp(ws->folder[i].filename,ws->folder[j].filename)>0){
+            // printf("%s\n",ws->folder[i].filename);
+            // printf("%s\n",ws->folder[j].filename);
+            // printf("<%d>\n",strcasecmp(ws->folder[i].filename,ws->folder[j].filename));
+            if(strcasecmp(ws->folder[i].filename,ws->folder[j].filename)>0){
+                printf("ss");
                 swap(&ws->folder[i],&ws->folder[j]);
             }
+            // printf("%s\n",ws->folder[i].filename);
+            // printf("%s\n",ws->folder[j].filename);
         }
     }
+    
 }
 struct changing* changes(node* n,working_space* ws,int* num) {
     struct changing* result = NULL;
@@ -162,14 +169,13 @@ struct changing* changes(node* n,working_space* ws,int* num) {
     for(;i<ws->file_num&&j<n->size;) {
         (*num)++;
         result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
-        
-        
-        if(strcmp(ws->folder[i].filename,n->files[j].filename)==0) {
+        if(strcasecmp(ws->folder[i].filename,n->files[j].filename)==0) {
             int t = hash_file(NULL,ws->folder[i].filename);
             //when two file is the same 
             if(t!=-2) {
                 ws->folder[i].hash = t;
             }
+
             if(t==-2) {
                 result[(*num)-1].w = 0;
             }else if(ws->folder[i].hash==n->files[j].hash) {
@@ -184,12 +190,12 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             result[(*num)-1].filename = n->files[j].filename;
             i++;
             j++;
-        }else if(strcmp(ws->folder[i].filename,n->files[j].filename)>0) {
+        }else if(strcasecmp(ws->folder[i].filename,n->files[j].filename)>0) {
             //delete 
             result[(*num)-1].filename = n->files[j].filename;
             result[(*num)-1].w = 2;
             j++;
-        }else if(strcmp(ws->folder[i].filename,n->files[j].filename)<0) {
+        }else if(strcasecmp(ws->folder[i].filename,n->files[j].filename)<0) {
             //adding
             result[(*num)-1].filename = ws->folder[i].filename;
             result[(*num)-1].w = 3;
@@ -235,7 +241,6 @@ char *svc_commit(void *helper, char *message) {
     for(int i = 0;i<strlen(message);i++) {
         id = (id+message[i])%1000;
     }
-    
     if(h->head->m==NULL && h->head->lastnode == NULL){//init, first commit 
         if(h->ws->file_num==0){
             return NULL;
@@ -254,16 +259,17 @@ char *svc_commit(void *helper, char *message) {
             h->head->m[0]->changes[i].filename = h->head->m[0]->files[i].filename;
             h->head->m[0]->changes[i].w = 3;
         }
-        // for(int i=0;i<h->ws->file_num;i++) {
-        //     printf("%s\n",h->ws->folder[i].filename);
-        // }
-        for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in 
+        //things wrong here
+        for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in
+            //printf("\n%s\n",h->ws->folder[i].filename); 
             id+=376591;
             for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
                 //id = (id * (byte % 37)) % 15485863 + 1;
+                //printf("%d, ",(h->ws->folder[i].filename[j]));
                 id = (id * ((unsigned int)(h->ws->folder[i].filename[j])%37)%15485863+1 );
             }
         }
+        printf("<%d>",id);
         //printf("\n%d\n",id);
         result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
         sprintf(result,"%06x",id);
@@ -301,6 +307,9 @@ char *svc_commit(void *helper, char *message) {
         if(same == 1) {//if everything same, return NULL
             free(change);
             return NULL;
+        }
+        for(int i=0;i<len;i++) {
+            printf("%s\n",change[i].filename);
         }
         //if can input;
         h->head->size++;
