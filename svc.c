@@ -133,23 +133,6 @@ int hash_file(void *helper, char *file_path) {
     return hash;
 }
 
-unsigned long long int sort_num(char* s) {
-    unsigned long long int num = 0.00;
-    unsigned long long int level = 10000000000000000;
-    //65-122
-    for(int i = 0;i<strlen(s);i++){//the length of sa
-        if(s[i]>=65 && s[i]<=90) {
-            
-            num = num + ((s[i]-65)*level);
-            level = level/100;
-        }else if(s[i]>=97 && s[i]<=122) {
-            num = num + ((s[i]-97)*level);
-            level = level/100;
-        }
-    }
-    //printf("%s:  <%lld>\n",s,num);
-    return num;
-}
 void swap(s_file* a,s_file*b) {
     char* temp;
     temp = a->filename;
@@ -165,7 +148,7 @@ void sort_s_file(working_space* ws) {
         for(int j = i+1;j<ws->file_num;j++) {
             // printf("<%f\n",sort_num(ws->folder[i].filename));
             // printf("%f>\n",sort_num(ws->folder[j].filename));
-            if(sort_num(ws->folder[i].filename)>sort_num(ws->folder[j].filename)){
+            if(strcmp(ws->folder[i].filename,ws->folder[j].filename)>0){
                 swap(&ws->folder[i],&ws->folder[j]);
             }
         }
@@ -201,12 +184,12 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             result[(*num)-1].filename = n->files[j].filename;
             i++;
             j++;
-        }else if(sort_num(ws->folder[i].filename)>sort_num(n->files[j].filename)) {
+        }else if(strcmp(ws->folder[i].filename,n->files[j].filename)>0) {
             //delete 
             result[(*num)-1].filename = n->files[j].filename;
             result[(*num)-1].w = 2;
             j++;
-        }else if(sort_num(ws->folder[i].filename)<sort_num(n->files[j].filename)) {
+        }else if(strcmp(ws->folder[i].filename,n->files[j].filename)<0) {
             //adding
             result[(*num)-1].filename = ws->folder[i].filename;
             result[(*num)-1].w = 3;
