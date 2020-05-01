@@ -312,6 +312,7 @@ char *svc_commit(void *helper, char *message) {
                     id = id + 9573681;
                 }else if(change[i].w == 2) {//deleting
                     //printf("the name is : %s and the change is %d\n",change[i].filename,change[i].w);
+                    svc_rm(h,change[i].filename);
                     id = id + 85973;
                 }else if(change[i].w == 3) {//adding
                     id = id + 376591;
