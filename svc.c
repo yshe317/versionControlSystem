@@ -270,6 +270,7 @@ char *svc_commit(void *helper, char *message) {
             h->head->m[0]->changes[i].w = 3;
             int t = hash_file(NULL,h->ws->folder[i].filename);
             if(t==-2) {
+                svc_rm(h,h->head->m[0]->changes[i].filename);
                 h->head->m[0]->changes[i].w = 99;//skip number
             }
         }
