@@ -8,7 +8,7 @@ typedef struct node node;
 typedef struct{
     int hash;
     char* filename;
-}s_file;
+}   s_file;
 
 struct changing{
     int w;
@@ -176,7 +176,7 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             }
 
             if(t==-2) {
-                result[(*num)-1].w = 0;
+                result[(*num)-1].w = 2;
             }else if(ws->folder[i].hash==n->files[j].hash) {
                 //printf("nochange");
                 //keep same 
