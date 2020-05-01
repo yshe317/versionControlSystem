@@ -269,7 +269,7 @@ char *svc_commit(void *helper, char *message) {
                 id = (id * ((unsigned int)(h->ws->folder[i].filename[j])%37)%15485863+1 );
             }
         }
-        printf("<%d>",id);
+        //printf("<%d>",id);
         //printf("\n%d\n",id);
         result = (char*)malloc(7*sizeof(char));  //maybe the problem that test file will free the result
         sprintf(result,"%06x",id);
