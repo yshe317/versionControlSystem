@@ -196,8 +196,14 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             j++;
         }else if(strcasecmp(ws->folder[i].filename,n->files[j].filename)<0) {
             //adding
+            //for adding thing that be delete in local file
+            
             result[(*num)-1].filename = ws->folder[i].filename;
             result[(*num)-1].w = 3;
+            int t = hash_file(NULL,ws->folder[i].filename);
+            if(t==-2) {
+                result[(*num)-1].w = 99;//skip number
+            }
             i++;
         }
     }
@@ -207,6 +213,10 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
             result[(*num)-1].filename = ws->folder[i].filename;
             result[(*num)-1].w = 3;
+            int t = hash_file(NULL,ws->folder[i].filename);
+            if(t==-2) {
+                result[(*num)-1].w = 99;//skip number
+            }
         }
         //the remain in ws is adding
     }else{
@@ -216,6 +226,7 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
             result[(*num)-1].filename = n->files[j].filename;
             result[(*num)-1].w = 2;
+            
         }
     }
     return result;
@@ -257,9 +268,16 @@ char *svc_commit(void *helper, char *message) {
         for(int i = 0;i<h->ws->file_num;i++) {
             h->head->m[0]->changes[i].filename = h->head->m[0]->files[i].filename;
             h->head->m[0]->changes[i].w = 3;
+            int t = hash_file(NULL,h->ws->folder[i].filename);
+            if(t==-2) {
+                h->head->m[0]->changes[i].w = 99;//skip number
+            }
         }
         //things wrong here
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in
+            if(h->head->m[0]->changes[i].w == 99) {
+               continue; 
+            }
             //printf("\n%s\n",h->ws->folder[i].filename); 
             id+=376591;
             for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
@@ -297,6 +315,8 @@ char *svc_commit(void *helper, char *message) {
                     id = id + 85973;
                 }else if(change[i].w == 3) {//adding
                     id = id + 376591;
+                }else if(change[i].w == 99) {
+                    continue;
                 }
                 for(int j = 0;j<strlen(change[i].filename);j++) {
                     id = (id*(change[i].filename[j]%37))%15485863+1;
