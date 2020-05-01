@@ -152,7 +152,6 @@ void sort_s_file(working_space* ws) {
             // printf("%s\n",ws->folder[j].filename);
             // printf("<%d>\n",strcasecmp(ws->folder[i].filename,ws->folder[j].filename));
             if(strcasecmp(ws->folder[i].filename,ws->folder[j].filename)>0){
-                printf("ss");
                 swap(&ws->folder[i],&ws->folder[j]);
             }
             // printf("%s\n",ws->folder[i].filename);
@@ -308,9 +307,9 @@ char *svc_commit(void *helper, char *message) {
             free(change);
             return NULL;
         }
-        for(int i=0;i<len;i++) {
-            printf("%s\n",change[i].filename);
-        }
+        // for(int i=0;i<len;i++) {
+        //     printf("%s\n",change[i].filename);
+        // }
         //if can input;
         h->head->size++;
         h->head->m = (node**)realloc(h->head->m,sizeof(node*)*(h->head->size));
