@@ -91,7 +91,7 @@ int hash_file(void *helper, char *file_path) {
     return hash;
 }
 
-
+//10233/a.txt,a.txt
 int copyFile(char *in, char *out) {
     FILE* fin = NULL;
     fin = fopen(in,"r");
@@ -787,5 +787,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     strcat(message,branch_name);
     char* result = svc_commit(helper,message);
     free(message);
+    node* newcommit = (node*)get_commit(helper,result);
+    newcommit -> mother = target->m[target->size-1];
     return result;
 }
