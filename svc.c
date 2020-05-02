@@ -263,7 +263,7 @@ char *svc_commit(void *helper, char *message) {
 
         sort_s_file(h->ws);
 
-        
+        save_file(h->head->m[0],h->ws);
 
         h->head->m[0] -> changes = (struct changing*)malloc(sizeof(struct changing)*h->ws->file_num);
         for(int i = 0;i<h->ws->file_num;i++) {
@@ -275,7 +275,7 @@ char *svc_commit(void *helper, char *message) {
                 h->head->m[0]->changes[i].w = 99;//skip number
             }
         }
-        save_file(h->head->m[0],h->ws);
+        
         //things wrong here
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in
             if(h->head->m[0]->changes[i].w == 99) {
@@ -307,7 +307,6 @@ char *svc_commit(void *helper, char *message) {
         int same = 1;
         struct changing* change = changes(lastcommit,h->ws,&len); 
         for(int i =0;i<len;i++) {
-            
             if(change[i].w!=0) {
                 
                 same = 0;
@@ -320,6 +319,7 @@ char *svc_commit(void *helper, char *message) {
                 }else if(change[i].w == 3) {//adding
                     id = id + 376591;
                 }else if(change[i].w == 99) {
+                    svc_rm(h,change[i].filename);
                     continue;
                 }
                 for(int j = 0;j<strlen(change[i].filename);j++) {
