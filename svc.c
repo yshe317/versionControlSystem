@@ -156,7 +156,7 @@ void localize_file(s_file* file,char* id) {
     mkdir(current,0777);
     char* temp = "\0";
     char* temp_filename;
-    strdup(temp_filename,file->filename);
+    temp_filename = strdup(file->filename);
     char* ready = strtok(temp_filename,"/");//deep copy the filename first
     while(ready != NULL) {
         strcat(current,temp);
