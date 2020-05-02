@@ -408,7 +408,6 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     return ls;
 }
 
-
 void print_change(struct changing* c) {
     if(c->w == 99) {
         
@@ -439,9 +438,9 @@ void print_commit(void *helper, char *commit_id) {
                     print_change(&h->branches[i]->m[j]->changes[x]);//wrong order
                 }
                 printf("\n    Tracked files (%d):",h->branches[i]->m[j]->size);
-                // for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
-
-                // }
+                for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
+                    printf("[%10d] %s\n",h->branches[i]->m[j]->files[x].hash,h->branches[i]->m[j]->files[x].filename);
+                }
             }
         }
     }
