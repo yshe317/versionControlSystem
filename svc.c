@@ -383,6 +383,20 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     return NULL;
 }
 
+
+void print_change(struct changing* c) {
+    if(c->w == 99) {
+        
+    }else if(c->w == 0) {
+        
+    }else if(c->w == 2) {
+        printf("    %c %s\n",'-',c->filename);
+    }else if(c->w == 1) {
+
+    }else if(c->w == 3) {
+        printf("    %c %s\n",'+',c->filename);
+    }
+}
 void print_commit(void *helper, char *commit_id) {
     // TODO: Implement
     if(commit_id == NULL) {
@@ -394,7 +408,14 @@ void print_commit(void *helper, char *commit_id) {
         for(int j = 0; j < h->branches[i]->size; j++) {
             if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
                 can_not_find = 0;
+                printf("%s [%s]: %s\n",commit_id,h->branches[i]->branchname,h->branches[i]->m[j]->message);
+                for(int x = 0;x<h->branches[i]->m[j]->n_change;x++) {
+                    print_change(&h->branches[i]->m[j]->changes[x]);
+                }
+                printf("    Tracked files (%d):",h->branches[i]->m[j]->size);
+                // for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
 
+                // }
             }
         }
     }
@@ -567,6 +588,9 @@ int svc_rm(void *helper, char *file_name) {
 
 int svc_reset(void *helper, char *commit_id) {
     // TODO: Implement
+    if(commit_id == NULL) {
+        return -1;
+    }
     return 0;
 }
 
