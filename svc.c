@@ -782,7 +782,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
 
 
 
-    char* message = (char*)malloc(sizeof(char)*(14+strlen(branch_name)));
+    char* message = (char*)malloc(sizeof(char)*(15+strlen(branch_name)));
     strcpy(message,"Merged branch ");
     strcat(message,branch_name);
     char* result = svc_commit(helper,message);
