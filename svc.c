@@ -151,7 +151,7 @@ int copyFile(char *in, char *out) {
     return 0;
 }
 void localize_file(s_file* file,char* id) {
-    char* current = (char*)malloc(sizeof(char)*(strlen(file->filename)+7));
+    char* current = (char*)malloc(sizeof(char)*(strlen(file->filename)+8));
     strcpy(current,id);
     mkdir(current,0777);
     char* temp = "\0";
