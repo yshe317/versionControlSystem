@@ -646,5 +646,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         }
     }
     if(can_not_find == 1) { return NULL; }
+
+    printf("Merge successful\n");
     return NULL;
 }
