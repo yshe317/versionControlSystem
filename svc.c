@@ -155,7 +155,9 @@ void localize_file(s_file* file,char* id) {
     strcpy(current,id);
     mkdir(current,0777);
     char* temp = "\0";
-    char* ready = strtok(file->filename,"/");
+    char* temp_filename;
+    strdup(temp_filename,file->filename);
+    char* ready = strtok(temp_filename,"/");//deep copy the filename first
     while(ready != NULL) {
         strcat(current,temp);
         mkdir(current,0777);
@@ -166,6 +168,7 @@ void localize_file(s_file* file,char* id) {
     strcat(current,temp);
     copyFile(file->filename,current);
     free(current);
+    free(temp_filename);
     //printf("\nthe number is %d\n",a);
 }
 
