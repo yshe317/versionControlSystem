@@ -703,8 +703,7 @@ int svc_reset(void *helper, char *commit_id) {
 
     char* path = NULL;
     for(int i = 0;i<h->ws->file_num; i++) {
-        path = (char*)malloc(sizeof(char)*(strlen(commit->files[i].filename)+8)); 
-        path = "\0";
+        path = (char*)malloc(sizeof(*commit_id)+sizeof(*commit->files[i].filename)+sizeof(char)); 
         strcpy(path, commit_id);
         strcat(path,"/");
         strcat(path,commit->files[i].filename);
