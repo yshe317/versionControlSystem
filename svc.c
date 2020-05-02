@@ -559,22 +559,13 @@ int svc_checkout(void *helper, char *branch_name) {
     if(can_not_find == 1) {
         return -1;
     }
-    for(int i=0;i<h->ws->file_num;i++) {
-        free(h->ws->folder[i].filename);
-    }
-    free(h->ws->folder);
-    node* lastnode;
     if(h->head->size==0) {
-        lastnode = h->head->lastnode;
-    }else{
-        lastnode = h->head->m[h->head->size-1];
-    }
-    h->ws->folder = (s_file*)malloc(sizeof(s_file)*lastnode->size);
-    h->ws->file_num = lastnode->size;
-    for(int i = 0;i<lastnode->size; i++) {
-        h->ws->folder[i].filename = strdup(lastnode->files[i].filename);
-        h->ws->folder[i].hash = lastnode->files[i].hash;
-    }
+        svc_reset(helper,h->head->lastnode->commitid);
+    // }else{
+    //     svc_reset(helper,h->);
+    // }
+    
+    
     return 0;
 }
 
@@ -693,6 +684,7 @@ int svc_reset(void *helper, char *commit_id) {
         strcat(path,"/");
         strcat(path,commit->files[i].filename);
         h->ws->folder[i].filename = strdup(commit->files[i].filename);
+        h->ws->folder[i].hash = commit->files[i].hash;
         copyFile(path,h->ws->folder[i].filename);
         free(path);
     }
