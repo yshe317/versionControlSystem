@@ -165,6 +165,7 @@ void localize_file(s_file* file,char* id) {
     }
     strcat(current,temp);
     copyFile(file->filename,current);
+    free(current);
     //printf("\nthe number is %d\n",a);
 }
 
