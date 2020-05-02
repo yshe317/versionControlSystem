@@ -750,11 +750,11 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     int i,j= 0;
 
     while(i<h->head->m[h->head->size-1]->size&& j < target->m[target->size-1]) {
-        if( ) {
+        // if( ) {
 
-        }else if() {
+        // }else if() {
 
-        }
+        // }
 
 
     }
