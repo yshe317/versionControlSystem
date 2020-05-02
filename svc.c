@@ -439,7 +439,7 @@ void print_commit(void *helper, char *commit_id) {
                 }
                 printf("\n    Tracked files (%d):\n",h->branches[i]->m[j]->size);
                 for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
-                    printf("[%10d] %s\n",h->branches[i]->m[j]->files[x].hash,h->branches[i]->m[j]->files[x].filename);
+                    printf("    [%10d] %s\n",h->branches[i]->m[j]->files[x].hash,h->branches[i]->m[j]->files[x].filename);
                 }
             }
         }
