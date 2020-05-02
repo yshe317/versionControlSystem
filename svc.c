@@ -18,6 +18,7 @@ struct node{ // every node is a commit
     char* commitid;
     char* message;
     node* last_node;
+    node* mother;
     int size;
     int n_change;
     struct changing* changes;
@@ -310,7 +311,7 @@ char *svc_commit(void *helper, char *message) {
         strcpy(h->head->m[0]->message,message);//copy message
         h->head->m[0]->last_node = NULL; //set the last node
         h->head->m[0]->n_change = h->ws->file_num;
-
+        h->head->m[0]->mother = NULL;
 
         sort_s_file(h->ws);
 
@@ -390,6 +391,7 @@ char *svc_commit(void *helper, char *message) {
         h->head->m = (node**)realloc(h->head->m,sizeof(node*)*(h->head->size));
         h->head->m[h->head->size-1] = (node*)malloc(sizeof(node));
         h->head->m[h->head->size-1]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
+        h->head->m[h->head->size-1]->mother = NULL;
         strcpy(h->head->m[h->head->size-1]->message,message);
         h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
         save_file(h->head->m[h->head->size-1],h->ws);
@@ -442,13 +444,23 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     if(commit == NULL) { return NULL; }
     node* n = (node*)commit;
     char** ls = NULL;
-
-    while(n->last_node!=NULL) {
-        n = n->last_node;
+    if(n->mother!=NULL) {
         (*n_prev)++;
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
-        ls[(*n_prev)-1] = n->commitid;
+        ls[(*n_prev)-1] = n->mother->commitid;
     }
+
+    if(n->last_node!=NULL) {
+        (*n_prev)++;
+        ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
+        ls[(*n_prev)-1] = n->last_node->commitid;
+    }
+    // while(n->last_node!=NULL) {
+    //     n = n->last_node;
+    //     (*n_prev)++;
+    //     ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
+    //     ls[(*n_prev)-1] = n->commitid;
+    // }
     return ls;
 }
 
@@ -723,12 +735,29 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     help* h = (help*)helper;
     if(strcmp(h->head->branchname, branch_name) == 0) { return NULL; }
     int can_not_find = 1;
+    branch* target;
     for(int i = 0; i < h->n_branches; i++) {
         if(strcmp(h->branches[i]->branchname, branch_name) == 0) {
             can_not_find = 0;
+            target = h->branches[i];
         }
     }
     if(can_not_find == 1) { return NULL; }
+    for(int i=0;i<h->ws->file_num;i++) {
+        free(h->ws->folder[i].filename);
+    }
+    free(h->ws->folder);
+    int i,j= 0;
+
+    while(i<h->head->m[h->head->size-1]->size&& j < target->m[target->size-1]) {
+        if( ) {
+
+        }else if() {
+
+        }
+
+
+    }
 
     printf("Merge successful\n");
     return NULL;
