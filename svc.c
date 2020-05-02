@@ -452,7 +452,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     return ls;
 }
 
-void print_change(struct changing* c) {
+void print_change(struct changing* c,node* n) {
     if(c->w == 99) {
 
     }else if(c->w == 0) {
@@ -460,7 +460,20 @@ void print_change(struct changing* c) {
     }else if(c->w == 2) {
         printf("    %c %s\n",'-',c->filename);
     }else if(c->w == 1) {
+        int i;
+        for(i = 0;i< n ->size;i++) {
+            if(strcmp(c->filename,n->files[i].filename) == 0) {
+                break; 
+            }
+        }
 
+        int j;
+        for(j = 0;j<n->last_node->size;j++) {
+            if(strcmp(c->filename,n->last_node->files[j].filename) == 0) {
+                break;
+            }
+        }
+        printf("    %c %s [%10d -> %10d]\n",'/',c->filename,n->last_node->files[j].hash,n->files[i].hash);
     }else if(c->w == 3) {
         printf("    %c %s\n",'+',c->filename);
     }
@@ -479,7 +492,7 @@ void print_commit(void *helper, char *commit_id) {
                 can_not_find = 0;
                 printf("%s [%s]: %s\n",commit_id,h->branches[i]->branchname,h->branches[i]->m[j]->message);
                 for(int x = 0;x<h->branches[i]->m[j]->n_change;x++) {
-                    print_change(&h->branches[i]->m[j]->changes[x]);//wrong order
+                    print_change(&h->branches[i]->m[j]->changes[x],&h->branches[i]->m[j]);//wrong order
                 }
                 printf("\n    Tracked files (%d):\n",h->branches[i]->m[j]->size);
                 for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
