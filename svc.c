@@ -164,7 +164,7 @@ void localize_file(s_file* file,char* id) {
         ready = strtok(NULL, "/");
     }
     strcat(current,temp);
-    int a = copyFile(file->filename,current);
+    copyFile(file->filename,current);
     //printf("\nthe number is %d\n",a);
 }
 
