@@ -224,7 +224,6 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
             result[(*num)-1].filename = n->files[j].filename;
             result[(*num)-1].w = 2;
-            
         }
     }
     return result;
@@ -260,8 +259,11 @@ char *svc_commit(void *helper, char *message) {
         strcpy(h->head->m[0]->message,message);//copy message
         h->head->m[0]->last_node = NULL; //set the last node
         h->head->m[0]->n_change = h->ws->file_num;
+
+
         sort_s_file(h->ws);
-        save_file(h->head->m[0],h->ws);
+
+        
 
         h->head->m[0] -> changes = (struct changing*)malloc(sizeof(struct changing)*h->ws->file_num);
         for(int i = 0;i<h->ws->file_num;i++) {
@@ -273,6 +275,7 @@ char *svc_commit(void *helper, char *message) {
                 h->head->m[0]->changes[i].w = 99;//skip number
             }
         }
+        save_file(h->head->m[0],h->ws);
         //things wrong here
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in
             if(h->head->m[0]->changes[i].w == 99) {
@@ -595,7 +598,7 @@ int svc_reset(void *helper, char *commit_id) {
     help* h = (help*)helper;
     node* commit = NULL;
     for(int i = 0; i<h->n_branches;i++) {
-        for(int j = 0; j<h->branches[i]->m[j]->size;j++) {
+        for(int j = 0; j<h->branches[i]->size;j++) {
             if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
                 commit = h->branches[i]->m[j];
             }
