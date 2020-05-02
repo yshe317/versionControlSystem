@@ -724,22 +724,37 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         }
     }
     free(temp);
-    // for(int i=0;i<h->ws->file_num;i++) {
-    //     free(h->ws->folder[i].filename);
-    // }
-    // free(h->ws->folder);
-    //int i,j= 0;
-
-    // while(i<h->head->m[h->head->size-1]->size&& j < target->m[target->size-1]) {
-    //     // if( ) {
-
-    //     // }else if() {
-
-    //     // }
 
 
-    // }
+
+    temp = changes(target->m[target->size-1],h->ws,&length);
+    char* path = NULL;
+    for(int i = 0;i<length;i++) {
+        if(temp[i].w == 2) {
+            path = (char*)malloc(sizeof(char)*(strlen(temp[i].filename)+8));
+            strcpy(path,target->m[target->size-1]->commitid);
+            strcat(path,"/");
+            strcat(path,temp[i].filename);
+            copyFile(path,temp[i].filename);
+            free(path);
+            svc_add(helper,temp[i].filename);
+            //move thing to local ws
+        }
+        
+    }
+    free(temp);
+    for(int i =0;i<n_resolutions;i++) {
+        copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
+    }
 
     printf("Merge successful\n");
-    return NULL;
+
+
+
+    char* message = (char*)malloc(sizeof(char)*(14+strlen(branch_name)));
+    strcpy(message,"Merge branch ");
+    strcat(message,branch_name);
+    char* result = svc_commit(helper,message);
+    free(message);
+    return result;
 }
