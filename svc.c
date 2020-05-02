@@ -173,8 +173,6 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             ws->folder[i].hash = t;
         }
         if(strcasecmp(ws->folder[i].filename,n->files[j].filename)==0) {
-            
-
             if(t==-2) {
                 result[(*num)-1].w = 2;
             }else if(ws->folder[i].hash==n->files[j].hash) {
@@ -597,7 +595,7 @@ int svc_reset(void *helper, char *commit_id) {
     help* h = (help*)helper;
     node* commit = NULL;
     for(int i = 0; i<h->n_branches;i++) {
-        for(int j = 0; j<h->branches[i]->m[j];j++) {
+        for(int j = 0; j<h->branches[i]->m[j]->size;j++) {
             if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
                 commit = h->branches[i]->m[j];
             }
