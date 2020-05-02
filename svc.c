@@ -747,17 +747,17 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         free(h->ws->folder[i].filename);
     }
     free(h->ws->folder);
-    int i,j= 0;
+    //int i,j= 0;
 
-    while(i<h->head->m[h->head->size-1]->size&& j < target->m[target->size-1]) {
-        // if( ) {
+    // while(i<h->head->m[h->head->size-1]->size&& j < target->m[target->size-1]) {
+    //     // if( ) {
 
-        // }else if() {
+    //     // }else if() {
 
-        // }
+    //     // }
 
 
-    }
+    // }
 
     printf("Merge successful\n");
     return NULL;
