@@ -4,49 +4,6 @@
 #include<stdlib.h>
 #include<sys/stat.h>
 
-typedef struct node node;
-typedef struct{
-    int hash;
-    char* filename;
-}   s_file;
-
-struct changing{
-    int w;
-    char* filename;
-};
-struct node{ // every node is a commit
-    char* commitid;
-    char* message;
-    node* last_node;
-    node* mother;
-    int size;
-    int n_change;
-    struct changing* changes;
-    s_file* files;
-
-};
-
-
-typedef struct{ // branch
-    char* branchname;
-    node* lastnode;
-    node** m;
-    int size;
-}branch;
-
-
-
-typedef struct{ // current focus place
-    int file_num;
-    s_file* folder;
-}working_space;
-
-typedef struct{
-    branch** branches;
-    int n_branches;
-    branch* head;
-    working_space* ws;
-}help;
 
 void *svc_init(void) {
     // TODO: Implement
