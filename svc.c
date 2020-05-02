@@ -395,7 +395,15 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     // TODO: Implement
     if(n_prev == NULL) { return NULL; }
     if(commit == NULL) { return NULL; } 
-
+    node* n = (node*)commit;
+    char** ls = NULL;
+    (*n_prev) = 0;
+    while(n->last_node!=NULL) {
+        n = n->last_node;
+        (*n_prev)++;
+        ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
+        ls[(*n_prev)-1] = n->commitid;
+    }
     return NULL;
 }
 
