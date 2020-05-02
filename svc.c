@@ -394,10 +394,11 @@ void *get_commit(void *helper, char *commit_id) {
 char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     // TODO: Implement
     if(n_prev == NULL) { return NULL; }
+    (*n_prev) = 0;
     if(commit == NULL) { return NULL; } 
     node* n = (node*)commit;
     char** ls = NULL;
-    (*n_prev) = 0;
+    
     while(n->last_node!=NULL) {
         n = n->last_node;
         (*n_prev)++;
