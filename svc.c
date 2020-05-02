@@ -400,7 +400,8 @@ void print_change(struct changing* c) {
 void print_commit(void *helper, char *commit_id) {
     // TODO: Implement
     if(commit_id == NULL) {
-        printf("%s",commit_id);
+        printf("Invalid commit id\n");
+        return;
     }
     help* h = (help*)helper;
     int can_not_find = 1;
@@ -420,7 +421,8 @@ void print_commit(void *helper, char *commit_id) {
         }
     }
     if(can_not_find == 1) {
-        printf("%s",commit_id);
+        printf("Invalid commit id\n");
+        return;
     }
 }
 
