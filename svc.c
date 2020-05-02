@@ -254,6 +254,7 @@ char *svc_commit(void *helper, char *message) {
             svc_rm(h,h->ws->folder[i].filename);
         }
     }
+
     if(h->head->m==NULL && h->head->lastnode == NULL){//init, first commit 
         if(h->ws->file_num==0){
             return NULL;
@@ -377,9 +378,16 @@ char *svc_commit(void *helper, char *message) {
 void *get_commit(void *helper, char *commit_id) {
     // TODO: Implement
     if(commit_id==NULL) { return NULL; }
-    //help* h = (help*)helper;
+    
+    help* h = (help*)helper;
     //traverse branches
-
+    for(int i = 0; i<h->n_branches;i++) {
+        for(int j = 0; j<h->branches[i]->size;j++) {
+            if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
+                return h->branches[i]->m[j];
+            }
+        }
+    }
     return NULL;
 }
 
