@@ -688,18 +688,42 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
-    if(branch_name == NULL) { return NULL; }
+    if(branch_name == NULL) {
+        printf("Invalid branch name\n"); 
+        return NULL;
+    }
     help* h = (help*)helper;
-    if(strcmp(h->head->branchname, branch_name) == 0) { return NULL; }
-    int can_not_find = 1;
+    if(strcmp(h->head->branchname, branch_name) == 0) { 
+        printf("Cannot merge a branch with itself\n");
+        return NULL; 
+    }
+
     branch* target =NULL;
     for(int i = 0; i < h->n_branches; i++) {
         if(strcmp(h->branches[i]->branchname, branch_name) == 0) {
-            can_not_find = 0;
             target = h->branches[i];
         }
     }
-    if(can_not_find == 1||target == NULL) { return NULL; }
+    if(target == NULL) { 
+        printf("Branch not found\n");
+        return NULL;     
+    }
+    
+    int length;
+    struct changing* temp;
+    if(h->head->size==0) {
+        temp = changes(h->head->lastnode,h->ws,&length);
+    }else{
+        temp = changes(h->head->m[h->head->size-1],h->ws,&length);
+    }
+    for(int i = 0;i<length;i++) {
+        if(temp[i].w != 0) {
+            free(temp);
+            printf("Changes must be committed\n");
+            return NULL;
+        }
+    }
+    free(temp);
     // for(int i=0;i<h->ws->file_num;i++) {
     //     free(h->ws->folder[i].filename);
     // }
