@@ -492,7 +492,7 @@ void print_commit(void *helper, char *commit_id) {
                 can_not_find = 0;
                 printf("%s [%s]: %s\n",commit_id,h->branches[i]->branchname,h->branches[i]->m[j]->message);
                 for(int x = 0;x<h->branches[i]->m[j]->n_change;x++) {
-                    print_change(&h->branches[i]->m[j]->changes[x],&h->branches[i]->m[j]);//wrong order
+                    print_change(&h->branches[i]->m[j]->changes[x],h->branches[i]->m[j]);//wrong order
                 }
                 printf("\n    Tracked files (%d):\n",h->branches[i]->m[j]->size);
                 for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
