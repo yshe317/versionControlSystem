@@ -709,6 +709,12 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         return NULL;     
     }
     
+    for(int i = 0;i<h->ws->file_num;i++) {
+        h->ws->folder[i].hash = hash_file(h,h->ws->folder[i].filename);
+        if(h->ws->folder[i].hash == -2) {
+            svc_rm(h,h->ws->folder[i].filename);
+        }
+    }
     int length;
     struct changing* temp;
     if(h->head->size==0) {
@@ -717,7 +723,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         temp = changes(h->head->m[h->head->size-1],h->ws,&length);
     }
     for(int i = 0;i<length;i++) {
-        if(temp[i].w != 0&&temp[i].w !=99) {
+        if(temp[i].w != 0 && temp[i].w !=99) {
             free(temp);
             printf("Changes must be committed\n");
             return NULL;
