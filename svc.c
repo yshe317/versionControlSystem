@@ -132,7 +132,12 @@ int hash_file(void *helper, char *file_path) {
     fclose(fin);
     return hash;
 }
+void localize(node* n) {
+    for(int i = 0;i<n->size;i++) {
 
+    }
+    mkdir("sss",0777);
+}
 void swap(s_file* a,s_file*b) {
     char* temp;
     temp = a->filename;
@@ -371,7 +376,7 @@ char *svc_commit(void *helper, char *message) {
         }
         free(change);
     }
-    
+    localize(NULL);
     return result;
 }
 
@@ -421,7 +426,7 @@ void print_change(struct changing* c) {
         printf("    %c %s\n",'+',c->filename);
     }
 }
-void print_commit(void *helper, char *commit_id) {
+void print_commit(void *helper, char *commit_id) { 
     // TODO: Implement
     if(commit_id == NULL) {
         printf("Invalid commit id\n");
