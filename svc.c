@@ -404,7 +404,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
         ls[(*n_prev)-1] = n->commitid;
     }
-    return NULL;
+    return ls;
 }
 
 
