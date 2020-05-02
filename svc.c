@@ -168,12 +168,12 @@ struct changing* changes(node* n,working_space* ws,int* num) {
     for(;i<ws->file_num&&j<n->size;) {
         (*num)++;
         result = (struct changing*)realloc(result,sizeof(struct changing)*(*num));
+        int t = hash_file(NULL,ws->folder[i].filename);
+        if(t!=-2) {
+            ws->folder[i].hash = t;
+        }
         if(strcasecmp(ws->folder[i].filename,n->files[j].filename)==0) {
-            int t = hash_file(NULL,ws->folder[i].filename);
-            //when two file is the same 
-            if(t!=-2) {
-                ws->folder[i].hash = t;
-            }
+            
 
             if(t==-2) {
                 result[(*num)-1].w = 2;
@@ -264,6 +264,7 @@ char *svc_commit(void *helper, char *message) {
         h->head->m[0]->n_change = h->ws->file_num;
         sort_s_file(h->ws);
         save_file(h->head->m[0],h->ws);
+
         h->head->m[0] -> changes = (struct changing*)malloc(sizeof(struct changing)*h->ws->file_num);
         for(int i = 0;i<h->ws->file_num;i++) {
             h->head->m[0]->changes[i].filename = h->head->m[0]->files[i].filename;
@@ -411,9 +412,9 @@ void print_commit(void *helper, char *commit_id) {
                 can_not_find = 0;
                 printf("%s [%s]: %s\n",commit_id,h->branches[i]->branchname,h->branches[i]->m[j]->message);
                 for(int x = 0;x<h->branches[i]->m[j]->n_change;x++) {
-                    print_change(&h->branches[i]->m[j]->changes[x]);
+                    print_change(&h->branches[i]->m[j]->changes[x]);//wrong order
                 }
-                printf("    Tracked files (%d):",h->branches[i]->m[j]->size);
+                printf("\n    Tracked files (%d):",h->branches[i]->m[j]->size);
                 // for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
 
                 // }
@@ -593,6 +594,19 @@ int svc_reset(void *helper, char *commit_id) {
     if(commit_id == NULL) {
         return -1;
     }
+    help* h = (help*)helper;
+    node* commit = NULL;
+    for(int i = 0; i<h->n_branches;i++) {
+        for(int j = 0; j<h->branches[i]->m[j];j++) {
+            if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
+                commit = h->branches[i]->m[j];
+            }
+        }
+    }
+    if(commit == NULL) {
+        return -2;
+    }
+
     return 0;
 }
 
