@@ -77,7 +77,7 @@ void cleanup(void *helper) {
     }
     free(h->ws->folder);
     free(h->ws);
-    
+
 
     // for(int i =h->n_branches-1;i>=0;i--) {
     //     free(h->branches[i]->branchname);
@@ -94,10 +94,10 @@ void cleanup(void *helper) {
             free(e->commitid);
             free(e->changes);
             for(int x = 0;x <e->size;x++) {
-                free(h->branches[i]->m[j]->files[x].filename);    
+                free(h->branches[i]->m[j]->files[x].filename);
             }
             free(h->branches[i]->m[j]->files);
-            
+
             free(h->branches[i]->m[j]);
         }
         free(h->branches[i]->branchname);
@@ -132,11 +132,46 @@ int hash_file(void *helper, char *file_path) {
     fclose(fin);
     return hash;
 }
-void localize(node* n) {
-    //for(int i = 0;i<n->size;i++) {
 
-    //}
-    mkdir("sss",0777);
+
+int copyFile(char *in, char *out) {
+    FILE* fin = NULL;
+    fin = fopen(in,"r");
+    //printf("ss");
+    if(fin == NULL) {
+        return -1;
+    }
+    FILE* fout = fopen(out,"w");
+    //printf("%s and %s",in,out);
+    int c;
+    while((c = fgetc(fin)) != EOF)
+        fputc(c,fout);
+    fclose(fin);
+    fclose(fout);
+    return 0;
+}
+void localize_file(s_file* file,char* id) {
+    char* current = (char*)malloc(sizeof(char)*(strlen(file->filename)+7));
+    strcpy(current,id);
+    mkdir(current,0777);
+    char* temp = "\0";
+    char* ready = strtok(file->filename,"/");
+    while(ready != NULL) {
+        strcat(current,temp);
+        mkdir(current,0777);
+        strcat(current,"/");
+        temp = ready;
+        ready = strtok(NULL, "/");
+    }
+    strcat(current,temp);
+    int a = copyFile(file->filename,current);
+    //printf("\nthe number is %d\n",a);
+}
+
+void localize(node* n,char* id) {
+    for(int i = 0;i<n->size;i++) {
+        localize_file(&n->files[i],id);
+    }
 }
 void swap(s_file* a,s_file*b) {
     char* temp;
@@ -163,7 +198,7 @@ void sort_s_file(working_space* ws) {
             // printf("%s\n",ws->folder[j].filename);
         }
     }
-    
+
 }
 struct changing* changes(node* n,working_space* ws,int* num) {
     struct changing* result = NULL;
@@ -182,7 +217,7 @@ struct changing* changes(node* n,working_space* ws,int* num) {
                 result[(*num)-1].w = 2;
             }else if(ws->folder[i].hash==n->files[j].hash) {
                 //printf("nochange");
-                //keep same 
+                //keep same
                 result[(*num)-1].w = 0;
             }else{
                 //modifi
@@ -193,14 +228,14 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             i++;
             j++;
         }else if(strcasecmp(ws->folder[i].filename,n->files[j].filename)>0) {
-            //delete 
+            //delete
             result[(*num)-1].filename = n->files[j].filename;
             result[(*num)-1].w = 2;
             j++;
         }else if(strcasecmp(ws->folder[i].filename,n->files[j].filename)<0) {
             //adding
             //for adding thing that be delete in local file
-            
+
             result[(*num)-1].filename = ws->folder[i].filename;
             result[(*num)-1].w = 3;
             int t = hash_file(NULL,ws->folder[i].filename);
@@ -260,7 +295,7 @@ char *svc_commit(void *helper, char *message) {
         }
     }
 
-    if(h->head->m==NULL && h->head->lastnode == NULL){//init, first commit 
+    if(h->head->m==NULL && h->head->lastnode == NULL){//init, first commit
         if(h->ws->file_num==0){
             return NULL;
         }
@@ -276,7 +311,7 @@ char *svc_commit(void *helper, char *message) {
         sort_s_file(h->ws);
 
         save_file(h->head->m[0],h->ws);
-    
+
         h->head->m[0] -> changes = (struct changing*)malloc(sizeof(struct changing)*h->ws->file_num);
         for(int i = 0;i<h->ws->file_num;i++) {
             h->head->m[0]->changes[i].filename = h->head->m[0]->files[i].filename;
@@ -287,13 +322,13 @@ char *svc_commit(void *helper, char *message) {
                 h->head->m[0]->changes[i].w = 99;//skip number
             }
         }
-        
+
         //things wrong here
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in
             if(h->head->m[0]->changes[i].w == 99) {
-               continue; 
+               continue;
             }
-            //printf("\n%s\n",h->ws->folder[i].filename); 
+            //printf("\n%s\n",h->ws->folder[i].filename);
             id+=376591;
             for(int j = 0;j<strlen(h->ws->folder[i].filename);j++) {
                 //id = (id * (byte % 37)) % 15485863 + 1;
@@ -317,10 +352,10 @@ char *svc_commit(void *helper, char *message) {
         }
         int len;
         int same = 1;
-        struct changing* change = changes(lastcommit,h->ws,&len); 
+        struct changing* change = changes(lastcommit,h->ws,&len);
         for(int i =0;i<len;i++) {
             if(change[i].w!=0) {
-                
+
                 same = 0;
                 if(change[i].w==1) {//modi
                     id = id + 9573681;
@@ -336,7 +371,7 @@ char *svc_commit(void *helper, char *message) {
                 }
                 for(int j = 0;j<strlen(change[i].filename);j++) {
                     id = (id*(change[i].filename[j]%37))%15485863+1;
-                }   
+                }
             }
         }
         if(same == 1) {//if everything same, return NULL
@@ -354,13 +389,13 @@ char *svc_commit(void *helper, char *message) {
         strcpy(h->head->m[h->head->size-1]->message,message);
         h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
         save_file(h->head->m[h->head->size-1],h->ws);
-        
+
         result = (char*)malloc(7*sizeof(char));
         sprintf(result,"%06x",id);
-        h->head->m[h->head->size-1]->commitid = result; 
+        h->head->m[h->head->size-1]->commitid = result;
         h->head->m[h->head->size-1] ->n_change = len;
         h->head->m[h->head->size-1]->changes = (struct changing*)malloc(sizeof(struct changing)*len);
-        
+
         for(int i = 0;i<len;i++) {
             h->head->m[h->head->size-1]->changes[i].w = change[i].w;
             if(change[i].w != 3) {
@@ -376,14 +411,14 @@ char *svc_commit(void *helper, char *message) {
         }
         free(change);
     }
-    localize(NULL);
+    localize(h->head->m[h->head->size-1],result);
     return result;
 }
 
 void *get_commit(void *helper, char *commit_id) {
     // TODO: Implement
     if(commit_id==NULL) { return NULL; }
-    
+
     help* h = (help*)helper;
     //traverse branches
     for(int i = 0; i<h->n_branches;i++) {
@@ -400,10 +435,10 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     // TODO: Implement
     if(n_prev == NULL) { return NULL; }
     (*n_prev) = 0;
-    if(commit == NULL) { return NULL; } 
+    if(commit == NULL) { return NULL; }
     node* n = (node*)commit;
     char** ls = NULL;
-    
+
     while(n->last_node!=NULL) {
         n = n->last_node;
         (*n_prev)++;
@@ -415,9 +450,9 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
 
 void print_change(struct changing* c) {
     if(c->w == 99) {
-        
+
     }else if(c->w == 0) {
-        
+
     }else if(c->w == 2) {
         printf("    %c %s\n",'-',c->filename);
     }else if(c->w == 1) {
@@ -426,7 +461,7 @@ void print_change(struct changing* c) {
         printf("    %c %s\n",'+',c->filename);
     }
 }
-void print_commit(void *helper, char *commit_id) { 
+void print_commit(void *helper, char *commit_id) {
     // TODO: Implement
     if(commit_id == NULL) {
         printf("Invalid commit id\n");
@@ -457,7 +492,7 @@ void print_commit(void *helper, char *commit_id) {
 
 int svc_branch(void *helper, char *branch_name) {
     // TODO: Implement
-    if(branch_name==NULL) { 
+    if(branch_name==NULL) {
         return -1;
     }
     for(int i = 0;i<strlen(branch_name);i++) {
@@ -467,7 +502,7 @@ int svc_branch(void *helper, char *branch_name) {
             //when letter is - / _
         }else if(branch_name[i]<=57&&branch_name[i]>=48) {
             //when letter is 0-9
-        }else{  
+        }else{
             return -1;
         }
     }
@@ -500,7 +535,7 @@ int svc_branch(void *helper, char *branch_name) {
     strcpy(focus->branchname,branch_name);
     focus->lastnode = h->head->m[h->head->size-1];
     focus->size = 0;
-    focus->m = NULL;    
+    focus->m = NULL;
     return 0;
 }
 
@@ -571,7 +606,7 @@ int svc_add(void *helper, char *file_name) {
     help* h = (help*)helper;
     // if the file has the same name in the working space
     for(int i = 0;i<h->ws->file_num;i++) {
-        if(strcmp(h->ws->folder[i].filename,file_name)==0) {  
+        if(strcmp(h->ws->folder[i].filename,file_name)==0) {
             exist = i;
             break;
         }
@@ -579,7 +614,7 @@ int svc_add(void *helper, char *file_name) {
     if(exist == -1) {//if file do not exist, put it in
         h->ws->file_num++;
         h->ws->folder = (s_file*)realloc(h->ws->folder,sizeof(s_file)*h->ws->file_num);
-        //copy the file name 
+        //copy the file name
         h->ws->folder[h->ws->file_num-1].filename = (char*)malloc(sizeof(char)*(strlen(file_name)+1));
         strcpy(h->ws->folder[h->ws->file_num-1].filename,file_name);
         h->ws->folder[h->ws->file_num-1].hash = hash_file(NULL,file_name); // save the hash
@@ -609,7 +644,7 @@ int svc_rm(void *helper, char *file_name) {
         hash = h->ws->folder[exist].hash;
         free(h->ws->folder[exist].filename);
         for(int i = exist+1;i<h->ws->file_num;i++){
-            h->ws->folder[i-1] = h->ws->folder[i]; 
+            h->ws->folder[i-1] = h->ws->folder[i];
         }
         h->ws->file_num--;
         h->ws->folder = (s_file*)realloc(h->ws->folder,h->ws->file_num*sizeof(s_file));
