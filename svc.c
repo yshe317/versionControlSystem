@@ -702,7 +702,7 @@ int svc_reset(void *helper, char *commit_id) {
     h->ws->folder = (s_file*)malloc(sizeof(s_file)*commit->size);
     char* path = NULL;
     for(int i = 0;i<h->ws->file_num; i++) {
-        path = (char*)realloc(path,sizeof(char)*strlen(commit->files[i].filename)+8);
+        path = (char*)realloc(path,sizeof(char)*(strlen(commit->files[i].filename)+8));
         path = "\0";
         strcat(path,commit->commitid);
         strcat(path,"/");
