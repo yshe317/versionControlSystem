@@ -675,17 +675,43 @@ int svc_reset(void *helper, char *commit_id) {
         return -1;
     }
     help* h = (help*)helper;
-    node* commit = NULL;
-    for(int i = 0; i<h->n_branches;i++) {
-        for(int j = 0; j<h->branches[i]->size;j++) {
-            if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
-                commit = h->branches[i]->m[j];
-            }
+    node* commit = h->head->m[h->head->size-1];
+    while(commit!=NULL) {
+        if(strcmp(commit_id,commit->commitid) == 0) {
+            break;
         }
+        commit = commit -> last_node;
     }
+    // for(int i = 0; i<h->n_branches;i++) {
+    //     for(int j = 0; j<h->branches[i]->size;j++) {
+    //         if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
+    //             commit = h->branches[i]->m[j];
+    //         }
+    //     }
+    // }
+
     if(commit == NULL) {
         return -2;
     }
+    for(int i=0;i<h->ws->file_num;i++) {
+        free(h->ws->folder[i].filename);
+    }
+    free(h->ws->folder);
+    h->ws->folder = NULL;
+    h->ws->file_num = commit->size;
+    h->ws->folder = (s_file*)malloc(sizeof(s_file)*commit->size);
+    char* path = NULL;
+    for(int i = 0;i<h->ws->file_num; i++) {
+        path = (char*)realloc(path,sizeof(char)*strlen(commit->files[i].filename)+8);
+        path = "\0";
+        strcat(path,commit->commitid);
+        strcat(path,"/");
+        strcat(path,commit->files[i].filename);
+        h->ws->folder[i].filename = strdup(commit->files[i].filename);
+        copyFile(path,h->ws->folder[i].filename);
+    }
+    free(path);
+    //copy local things to ws
 
     return 0;
 }
