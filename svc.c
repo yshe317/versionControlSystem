@@ -735,18 +735,18 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     help* h = (help*)helper;
     if(strcmp(h->head->branchname, branch_name) == 0) { return NULL; }
     int can_not_find = 1;
-    branch* target;
+    branch* target =NULL;
     for(int i = 0; i < h->n_branches; i++) {
         if(strcmp(h->branches[i]->branchname, branch_name) == 0) {
             can_not_find = 0;
             target = h->branches[i];
         }
     }
-    if(can_not_find == 1) { return NULL; }
-    for(int i=0;i<h->ws->file_num;i++) {
-        free(h->ws->folder[i].filename);
-    }
-    free(h->ws->folder);
+    if(can_not_find == 1||target == NULL) { return NULL; }
+    // for(int i=0;i<h->ws->file_num;i++) {
+    //     free(h->ws->folder[i].filename);
+    // }
+    // free(h->ws->folder);
     //int i,j= 0;
 
     // while(i<h->head->m[h->head->size-1]->size&& j < target->m[target->size-1]) {
