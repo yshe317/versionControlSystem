@@ -437,7 +437,7 @@ void print_commit(void *helper, char *commit_id) {
                 for(int x = 0;x<h->branches[i]->m[j]->n_change;x++) {
                     print_change(&h->branches[i]->m[j]->changes[x]);//wrong order
                 }
-                printf("\n    Tracked files (%d):",h->branches[i]->m[j]->size);
+                printf("\n    Tracked files (%d):\n",h->branches[i]->m[j]->size);
                 for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
                     printf("[%10d] %s\n",h->branches[i]->m[j]->files[x].hash,h->branches[i]->m[j]->files[x].filename);
                 }
