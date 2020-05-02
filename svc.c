@@ -653,7 +653,12 @@ int svc_reset(void *helper, char *commit_id) {
         return -1;
     }
     help* h = (help*)helper;
-    node* commit = h->head->m[h->head->size-1];
+    node* commit;
+    if(h->head->size==0) {
+        commit = h->head->lastnode;
+    }else{
+        commit = h->head->m[h->head->size-1];
+    }
     while(commit!=NULL) {
         if(strcmp(commit_id,commit->commitid) == 0) {
             break;
