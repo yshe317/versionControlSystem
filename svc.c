@@ -553,7 +553,11 @@ int svc_checkout(void *helper, char *branch_name) {
         if(strcmp(branch_name,h->branches[i]->branchname) == 0) {
             can_not_find = 0;
             h->head = h->branches[i];
-            svc_reset(helper,h->head->lastnode->commitid);
+            if(h->head->size==0) {
+                svc_reset(helper,h->head->lastnode->commitid);
+            }else{
+                svc_reset(helper,h->head->m[h->head->size-1]->commitid);
+            }
             return 0;
         }
     }
