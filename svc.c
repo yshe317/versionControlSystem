@@ -248,6 +248,12 @@ char *svc_commit(void *helper, char *message) {
     for(int i = 0;i<strlen(message);i++) {
         id = (id+message[i])%1000;
     }
+    for(int i = 0;i<h->ws->file_num;i++) {
+        h->ws->folder[i].hash = hash_file(h,h->ws->folder[i].filename);
+        if(h->ws->folder[i].hash == -2) {
+            svc_rm(h,h->ws->folder[i].filename);
+        }
+    }
     if(h->head->m==NULL && h->head->lastnode == NULL){//init, first commit 
         if(h->ws->file_num==0){
             return NULL;
@@ -264,7 +270,7 @@ char *svc_commit(void *helper, char *message) {
         sort_s_file(h->ws);
 
         save_file(h->head->m[0],h->ws);
-
+    
         h->head->m[0] -> changes = (struct changing*)malloc(sizeof(struct changing)*h->ws->file_num);
         for(int i = 0;i<h->ws->file_num;i++) {
             h->head->m[0]->changes[i].filename = h->head->m[0]->files[i].filename;
