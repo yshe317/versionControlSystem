@@ -133,9 +133,9 @@ int hash_file(void *helper, char *file_path) {
     return hash;
 }
 void localize(node* n) {
-    for(int i = 0;i<n->size;i++) {
+    //for(int i = 0;i<n->size;i++) {
 
-    }
+    //}
     mkdir("sss",0777);
 }
 void swap(s_file* a,s_file*b) {
