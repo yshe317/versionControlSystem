@@ -699,10 +699,12 @@ int svc_reset(void *helper, char *commit_id) {
     if(commit == NULL) {
         return -2;
     }
+    //free the ws
     for(int i=0;i<h->ws->file_num;i++) {
         free(h->ws->folder[i].filename);
     }
     free(h->ws->folder);
+    //renew the ws
     h->ws->folder = NULL;
     h->ws->file_num = commit->size;
     h->ws->folder = (s_file*)malloc(sizeof(s_file)*commit->size);
