@@ -735,7 +735,8 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
-    //printf("merge %s\n",branch_name);
+    //special condition
+
     if(branch_name == NULL) {
         printf("Invalid branch name\n");
         return NULL;
@@ -778,7 +779,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
 
     temp = changes(target->m[target->size-1],h->ws,&length);
     char* path = NULL;
-    for(int i = 0;i<length;i++) {
+    for(int i = 0;i<length;i++) {//put every thing in to ws
         if(temp[i].w == 2) {
             path = (char*)malloc(sizeof(char)*(strlen(temp[i].filename)+8));
             strcpy(path,target->m[target->size-1]->commitid);
@@ -793,7 +794,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
 
     }
     FILE* f;
-    for(int i = 0;i<n_resolutions;i++) {
+    for(int i = 0;i<n_resolutions;i++) {// resolution has highest priority
         f = fopen(resolutions[i].resolved_file,"r");
         if(f == NULL) {
             svc_rm(helper,resolutions[i].file_name);
