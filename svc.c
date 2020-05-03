@@ -81,8 +81,6 @@ int hash_file(void *helper, char *file_path) {
     fclose(fin);
     return hash;
 }
-
-
 int copyFile(char *in, char *out) {
     //copyFile(path_in,path_out)
     //it will copy file(path_in) to the file(path_out)
