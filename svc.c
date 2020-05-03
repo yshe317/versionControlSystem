@@ -802,7 +802,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             //int find = 0;
             for(int i =0;i<n_resolutions;i++) {
                 if(strcmp(temp[i].filename, resolutions[i].file_name)==0) {
-                    if(hash_file(NULL,temp[i].filename)==-2) {
+                    if(hash_file(NULL,resolutions[i].resolved_file)==-2) {
                         continue;
                     }
                     copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
