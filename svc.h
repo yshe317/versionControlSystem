@@ -44,6 +44,7 @@ typedef struct{
     int n_branches;
     branch* head;
     working_space* ws;
+    node* reset_node;
 }help;
 
 typedef struct resolution {

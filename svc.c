@@ -20,6 +20,7 @@ void *svc_init(void) {
     h->branches[0]->lastnode =NULL;
     h->n_branches = 1;
     h->head = h->branches[0];
+    h->reset_node = NULL;
     h->ws = (working_space*)malloc(sizeof(working_space));
     h->ws->file_num= 0;
     h->ws->folder = NULL;
@@ -314,7 +315,13 @@ char *svc_commit(void *helper, char *message) {
         }
         int len;
         int same = 1;
-        struct changing* change = changes(lastcommit,h->ws,&len);
+        struct changing* change;
+        if(h->reset_node == NULL) {
+          change = changes(lastcommit,h->ws,&len);
+        }else {
+          change = changes(h->reset_node,h->ws,&len);
+        }
+        h->reset_node = NULL;
         for(int i =0;i<len;i++) {
             if(change[i].w!=0) {
 
@@ -432,7 +439,7 @@ void print_change(struct changing* c,node* n) {
         int i;
         for(i = 0;i< n ->size;i++) {
             if(strcmp(c->filename,n->files[i].filename) == 0) {
-                break; 
+                break;
             }
         }
 
@@ -570,8 +577,8 @@ int svc_checkout(void *helper, char *branch_name) {
     // }else{
     //     svc_reset(helper,h->);
     // }
-    
-    
+
+
     return 0;
 }
 
@@ -687,10 +694,10 @@ int svc_reset(void *helper, char *commit_id) {
     h->ws->folder = NULL;
     h->ws->file_num = commit->size;
     h->ws->folder = (s_file*)malloc(sizeof(s_file)*commit->size);
-
+    h->reset_node = commit;
     char* path = NULL;
     for(int i = 0;i<h->ws->file_num; i++) {
-        path = (char*)malloc(sizeof(char)*(strlen(commit_id)+strlen(commit->files[i].filename)+2)); 
+        path = (char*)malloc(sizeof(char)*(strlen(commit_id)+strlen(commit->files[i].filename)+2));
         strcpy(path, commit_id);
         strcat(path,"/");
         strcat(path,commit->files[i].filename);
@@ -699,7 +706,7 @@ int svc_reset(void *helper, char *commit_id) {
         copyFile(path,h->ws->folder[i].filename);
         free(path);
     }
-    
+
     //copy local things to ws
 
     return 0;
@@ -708,13 +715,13 @@ int svc_reset(void *helper, char *commit_id) {
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
     if(branch_name == NULL) {
-        printf("Invalid branch name\n"); 
+        printf("Invalid branch name\n");
         return NULL;
     }
     help* h = (help*)helper;
-    if(strcmp(h->head->branchname, branch_name) == 0) { 
+    if(strcmp(h->head->branchname, branch_name) == 0) {
         printf("Cannot merge a branch with itself\n");
-        return NULL; 
+        return NULL;
     }
 
     branch* target =NULL;
@@ -723,9 +730,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             target = h->branches[i];
         }
     }
-    if(target == NULL) { 
+    if(target == NULL) {
         printf("Branch not found\n");
-        return NULL;     
+        return NULL;
     }
 
     // for(int i = 0;i<h->ws->file_num;i++) {
@@ -771,7 +778,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             svc_add(helper,temp[i].filename);
             //move thing to local ws
         }
-        
+
     }
     free(temp);
     for(int i =0;i<n_resolutions;i++) {
