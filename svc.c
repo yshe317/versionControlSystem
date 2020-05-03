@@ -439,6 +439,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     return ls;
 }
 
+//use to print change
 void print_change(struct changing* c,node* n) {
     if(c->w == 99) {
         //skip number
@@ -480,9 +481,10 @@ void print_commit(void *helper, char *commit_id) {
         for(int j = 0; j < h->branches[i]->size; j++) {
             if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
                 can_not_find = 0;
+                //can be in any order
                 printf("%s [%s]: %s\n",commit_id,h->branches[i]->branchname,h->branches[i]->m[j]->message);
                 for(int x = 0;x<h->branches[i]->m[j]->n_change;x++) {
-                    print_change(&h->branches[i]->m[j]->changes[x],h->branches[i]->m[j]);//wrong order
+                    print_change(&h->branches[i]->m[j]->changes[x],h->branches[i]->m[j]);
                 }
                 printf("\n    Tracked files (%d):\n",h->branches[i]->m[j]->size);
                 for(int x = 0;x<h->branches[i]->m[j]->size;x++) {
@@ -491,7 +493,7 @@ void print_commit(void *helper, char *commit_id) {
             }
         }
     }
-    if(can_not_find == 1) {
+    if(can_not_find == 1) { // cannot find
         printf("Invalid commit id\n");
         return;
     }
@@ -549,7 +551,7 @@ int svc_branch(void *helper, char *branch_name) {
 
 int svc_checkout(void *helper, char *branch_name) {
     // TODO: Implement
-    // printf("checkout %s\n",branch_name);
+    //coding the special condition first
     if(branch_name == NULL){
         return -1;
     }
@@ -576,6 +578,7 @@ int svc_checkout(void *helper, char *branch_name) {
         if(strcmp(branch_name,h->branches[i]->branchname) == 0) {
             can_not_find = 0;
             h->head = h->branches[i];
+            //reset to the head of the branch
             if(h->head->size==0) {
                 svc_reset(helper,h->head->lastnode->commitid);
             }else{
@@ -615,7 +618,6 @@ char **list_branches(void *helper, int *n_branches) {
 
 int svc_add(void *helper, char *file_name) {
     // TODO: Implement
-    // printf("add %s\n",file_name);
     if(file_name == NULL){
         return -1;
     }
