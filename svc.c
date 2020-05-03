@@ -593,9 +593,6 @@ int svc_checkout(void *helper, char *branch_name) {
     if(h->head->size==0) {
         svc_reset(helper,h->head->lastnode->commitid);
     }
-    // }else{
-    //     svc_reset(helper,h->);
-    // }
 
 
     return 0;
@@ -697,13 +694,7 @@ int svc_reset(void *helper, char *commit_id) {
         }
         commit = commit -> last_node;
     }
-    // for(int i = 0; i<h->n_branches;i++) {
-    //     for(int j = 0; j<h->branches[i]->size;j++) {
-    //         if(strcmp(commit_id,h->branches[i]->m[j]->commitid) == 0) {
-    //             commit = h->branches[i]->m[j];
-    //         }
-    //     }
-    // }
+
 
     if(commit == NULL) {
         return -2;
