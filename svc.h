@@ -3,16 +3,16 @@
 
 #include <stdlib.h>
 typedef struct node node;
-typedef struct{
+typedef struct{ // represent a file
     int hash;
     char* filename;
 }   s_file;
 
-struct changing{
+struct changing{ // to show the change when commit
     int w;
     char* filename;
 };
-struct node{ // every node is a commit
+struct node{ // every node is a commit, it connect to parents and lastcommit
     char* commitid;
     char* message;
     node* last_node;
@@ -25,8 +25,8 @@ struct node{ // every node is a commit
 
 };
 
-
-typedef struct{ // branch
+// branch, has lastnode from other branch and the main array m which is current branch
+typedef struct{
     char* branchname;
     node* lastnode;
     node** m;
@@ -40,6 +40,7 @@ typedef struct{ // current focus place
     s_file* folder;
 }working_space;
 
+// it is helper struct, contain everything i need
 typedef struct{
     branch** branches;
     int n_branches;
