@@ -418,14 +418,14 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     if(n->father!=NULL) {
         (*n_prev)++;
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
-        ls[(*n_prev)-1] = n->last_node->commitid;
+        ls[(*n_prev)-1] = n->father->commitid;
     }
     if(n->mother!=NULL) {
         (*n_prev)++;
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
         ls[(*n_prev)-1] = n->mother->commitid;
     }
-    printf("%s\n",n->commitid);
+    //printf("%s\n",n->commitid);
     
     // while(n->last_node!=NULL) {
     //     n = n->last_node;
