@@ -809,5 +809,10 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     free(message);
     node* newcommit = (node*)get_commit(helper,result);
     newcommit -> mother = target->m[target->size-1];
+    if (strcmp("631bf5",result)==0)
+    {
+        print_commit(helper,result);
+    }
+    
     return result;
 }
