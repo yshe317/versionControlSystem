@@ -268,6 +268,7 @@ char *svc_commit(void *helper, char *message) {
         h->head->m[0]->message = (char*)malloc(sizeof(char)*strlen(message)+1);
         strcpy(h->head->m[0]->message,message);//copy message
         h->head->m[0]->last_node = NULL; //set the last node
+        h->head->m[0] ->father = NULL;
         h->head->m[0]->n_change = h->ws->file_num;
         h->head->m[0]->mother = NULL;
 
@@ -321,7 +322,7 @@ char *svc_commit(void *helper, char *message) {
         }else {
           change = changes(h->reset_node,h->ws,&len);
         }
-        h->reset_node = NULL;
+        
         for(int i =0;i<len;i++) {
             if(change[i].w!=0) {
 
@@ -358,14 +359,20 @@ char *svc_commit(void *helper, char *message) {
         h->head->m[h->head->size-1]->mother = NULL;
         strcpy(h->head->m[h->head->size-1]->message,message);
         h->head->m[h->head->size-1]->last_node = lastcommit; // set the lastnode
+        if(h->reset_node == NULL) {
+            h->head->m[h->head->size-1]->father = lastcommit;
+        }else{
+            h->head->m[h->head->size-1]->father = h->reset_node;
+        }
+        
         save_file(h->head->m[h->head->size-1],h->ws);
-
+        h->reset_node = NULL;
         result = (char*)malloc(7*sizeof(char));
         sprintf(result,"%06x",id);
         h->head->m[h->head->size-1]->commitid = result;
         h->head->m[h->head->size-1] ->n_change = len;
         h->head->m[h->head->size-1]->changes = (struct changing*)malloc(sizeof(struct changing)*len);
-
+        
         for(int i = 0;i<len;i++) {
             h->head->m[h->head->size-1]->changes[i].w = change[i].w;
             if(change[i].w != 3) {
@@ -408,17 +415,18 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     if(commit == NULL) { return NULL; }
     node* n = (node*)commit;
     char** ls = NULL;
+    if(n->father!=NULL) {
+        (*n_prev)++;
+        ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
+        ls[(*n_prev)-1] = n->last_node->commitid;
+    }
     if(n->mother!=NULL) {
         (*n_prev)++;
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
         ls[(*n_prev)-1] = n->mother->commitid;
     }
 
-    if(n->last_node!=NULL) {
-        (*n_prev)++;
-        ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
-        ls[(*n_prev)-1] = n->last_node->commitid;
-    }
+    
     // while(n->last_node!=NULL) {
     //     n = n->last_node;
     //     (*n_prev)++;

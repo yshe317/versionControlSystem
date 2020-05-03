@@ -17,6 +17,7 @@ struct node{ // every node is a commit
     char* message;
     node* last_node;
     node* mother;
+    node* father;
     int size;
     int n_change;
     struct changing* changes;
