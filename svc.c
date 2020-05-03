@@ -96,12 +96,10 @@ int hash_file(void *helper, char *file_path) {
 int copyFile(char *in, char *out) {
     FILE* fin = NULL;
     fin = fopen(in,"r");
-    //printf("ss");
     if(fin == NULL) {
         return -1;
     }
     FILE* fout = fopen(out,"w");
-    //printf("%s and %s",in,out);
     int c;
     while((c = fgetc(fin)) != EOF)
         fputc(c,fout);
@@ -181,12 +179,10 @@ struct changing* changes(node* n,working_space* ws,int* num) {
             if(t==-2) {
                 result[(*num)-1].w = 2;
             }else if(ws->folder[i].hash==n->files[j].hash) {
-                //printf("nochange");
                 //keep same
                 result[(*num)-1].w = 0;
             }else{
                 //modifi
-                //printf("modified");
                 result[(*num)-1].w = 1;
             }
             result[(*num)-1].filename = n->files[j].filename;
@@ -291,7 +287,6 @@ char *svc_commit(void *helper, char *message) {
             }
         }
 
-        //things wrong here
         for(int i = 0;i<h->ws->file_num;i++) {//insert the weak file in
             if(h->head->m[0]->changes[i].w == 99) {
                continue;
