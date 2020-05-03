@@ -755,17 +755,6 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         return NULL;
     }
 
-    // for(int i = 0;i<h->ws->file_num;i++) {
-    //     h->ws->folder[i].hash = hash_file(h,h->ws->folder[i].filename);
-    //     //printf("%s\n",h->ws->folder[i].filename);
-    //     if(h->ws->folder[i].hash == -2) {
-    //         svc_rm(h,h->ws->folder[i].filename);
-    //     }
-    // }
-    // printf("|||||||||\n");
-    // for(int i = 0;i<h->head->m[h->head->size-1]->size;i++) {
-    //     printf("%s\n",h->head->m[h->head->size-1]->files[i].filename);
-    // }
     int length;
     struct changing* temp;
     if(h->head->size==0) {
@@ -815,6 +804,13 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             // }
         }
 
+    }
+    FILE* f;
+    for(int i = 0;i<n_resolutions;i++) {
+        f = fopen(resolutions[i].resolved_file,"r");
+        if(f == NULL) {
+            svc_rm(helper,resolutions[i].file_name);
+        }
     }
     free(temp);
     
