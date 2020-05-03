@@ -243,7 +243,7 @@ void save_file(node* n,working_space* ws) {
 }
 char *svc_commit(void *helper, char *message) {
     // TODO: Implement
-    printf("commit(%s)\n",message);
+    //printf("commit(%s)\n",message);
     if(message == NULL) {return NULL;}
     //get commit id
     help* h = (help*)helper;
@@ -417,7 +417,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     if(commit == NULL) { return NULL; }
     node* n = (node*)commit;
 
-    printf("getprev(%s)",n->commitid);
+    //printf("getprev(%s)",n->commitid);
 
 
     char** ls = NULL;
@@ -499,7 +499,7 @@ void print_commit(void *helper, char *commit_id) {
 
 int svc_branch(void *helper, char *branch_name) {
     // TODO: Implement
-    printf("branch(%s)\n",branch_name);
+    // printf("branch(%s)\n",branch_name);
     if(branch_name==NULL) {
         return -1;
     }
@@ -549,7 +549,7 @@ int svc_branch(void *helper, char *branch_name) {
 
 int svc_checkout(void *helper, char *branch_name) {
     // TODO: Implement
-    printf("checkout %s\n",branch_name);
+    // printf("checkout %s\n",branch_name);
     if(branch_name == NULL){
         return -1;
     }
@@ -615,7 +615,7 @@ char **list_branches(void *helper, int *n_branches) {
 
 int svc_add(void *helper, char *file_name) {
     // TODO: Implement
-    printf("add %s\n",file_name);
+    // printf("add %s\n",file_name);
     if(file_name == NULL){
         return -1;
     }
@@ -649,7 +649,7 @@ int svc_add(void *helper, char *file_name) {
 
 int svc_rm(void *helper, char *file_name) {
     // TODO: Implement
-    printf("rm %s\n",file_name);
+    //printf("rm %s\n",file_name);
     help* h = (help*)helper;
     if(file_name==NULL){
         return -1;
@@ -678,7 +678,7 @@ int svc_rm(void *helper, char *file_name) {
 
 int svc_reset(void *helper, char *commit_id) {
     // TODO: Implement
-    printf("reset %s\n",commit_id);
+    //printf("reset %s\n",commit_id);
     if(commit_id == NULL) {
         return -1;
     }
@@ -733,7 +733,7 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
-    printf("merge %s\n",branch_name);
+    //printf("merge %s\n",branch_name);
     if(branch_name == NULL) {
         printf("Invalid branch name\n");
         return NULL;
@@ -799,16 +799,19 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             //move thing to local ws
         }
         if(temp[i].w == 1 || temp[i].w == 0) {
-            int find = 0;
+            //int find = 0;
             for(int i =0;i<n_resolutions;i++) {
                 if(strcmp(temp[i].filename, resolutions[i].file_name)==0) {
+                    if(hash_file(NULL,temp[i].filename)==-2) {
+                        continue;
+                    }
                     copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
-                    find = 1;
+                    //find = 1;
                 }
             }
-            if(find == 0) {
-                svc_rm(helper,temp[i].filename);
-            }
+            // if(find == 0) {
+            //     svc_rm(helper,temp[i].filename);
+            // }
         }
 
     }
