@@ -243,6 +243,7 @@ void save_file(node* n,working_space* ws) {
 }
 char *svc_commit(void *helper, char *message) {
     // TODO: Implement
+    printf("commit(%s)\n",message);
     if(message == NULL) {return NULL;}
     //get commit id
     help* h = (help*)helper;
@@ -410,10 +411,15 @@ void *get_commit(void *helper, char *commit_id) {
 
 char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     // TODO: Implement
+    
     if(n_prev == NULL) { return NULL; }
     (*n_prev) = 0;
     if(commit == NULL) { return NULL; }
     node* n = (node*)commit;
+
+    printf("getprev(%s)",n->commitid);
+
+
     char** ls = NULL;
     if(n->father!=NULL) {
         (*n_prev)++;
@@ -493,6 +499,7 @@ void print_commit(void *helper, char *commit_id) {
 
 int svc_branch(void *helper, char *branch_name) {
     // TODO: Implement
+    printf("branch(%s)",branch_name);
     if(branch_name==NULL) {
         return -1;
     }
@@ -542,6 +549,7 @@ int svc_branch(void *helper, char *branch_name) {
 
 int svc_checkout(void *helper, char *branch_name) {
     // TODO: Implement
+    printf("checkout %s",branch_name);
     if(branch_name == NULL){
         return -1;
     }
@@ -607,6 +615,7 @@ char **list_branches(void *helper, int *n_branches) {
 
 int svc_add(void *helper, char *file_name) {
     // TODO: Implement
+    printf("add %s",file_name);
     if(file_name == NULL){
         return -1;
     }
@@ -640,6 +649,7 @@ int svc_add(void *helper, char *file_name) {
 
 int svc_rm(void *helper, char *file_name) {
     // TODO: Implement
+    printf("rm %s",file_name);
     help* h = (help*)helper;
     if(file_name==NULL){
         return -1;
@@ -668,6 +678,7 @@ int svc_rm(void *helper, char *file_name) {
 
 int svc_reset(void *helper, char *commit_id) {
     // TODO: Implement
+    printf("reset %s",commit_id);
     if(commit_id == NULL) {
         return -1;
     }
@@ -722,6 +733,7 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
+    printf("merge %s",branch_name);
     if(branch_name == NULL) {
         printf("Invalid branch name\n");
         return NULL;
