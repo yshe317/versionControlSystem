@@ -786,12 +786,17 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             svc_add(helper,temp[i].filename);
             //move thing to local ws
         }
+        if(temp[i].w == 1) {
+            for(int i =0;i<n_resolutions;i++) {
+                if(strcmp(temp[i].filename, resolutions[i].file_name)==0) {
+                    copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
+                }
+            }
+        }
 
     }
     free(temp);
-    for(int i =0;i<n_resolutions;i++) {
-        copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
-    }
+    
 
     printf("Merge successful\n");
 
