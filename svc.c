@@ -787,30 +787,20 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             svc_add(helper,temp[i].filename);
             //move thing to local ws
         }
-        if(temp[i].w == 1 || temp[i].w == 0) {
-            //int find = 0;
-            for(int i =0;i<n_resolutions;i++) {
-                if(strcmp(temp[i].filename, resolutions[i].file_name)==0) {
-                    if(hash_file(NULL,resolutions[i].resolved_file)==-2) {
-                        break;
-                    }else{
-                        copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
-                    }
-                    //find = 1;
-                }
-            }
-            // if(find == 0) {
-            //     svc_rm(helper,temp[i].filename);
-            // }
-        }
+
 
     }
     FILE* f;
     for(int i = 0;i<n_resolutions;i++) {
         f = fopen(resolutions[i].resolved_file,"r");
         if(f == NULL) {
+
             svc_rm(helper,resolutions[i].file_name);
+        }else{
+            copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
         }
+        fclose(f);
+        
     }
     free(temp);
     
