@@ -794,12 +794,12 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     for(int i = 0;i<n_resolutions;i++) {
         f = fopen(resolutions[i].resolved_file,"r");
         if(f == NULL) {
-
             svc_rm(helper,resolutions[i].file_name);
         }else{
+            fclose(f);
             copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
         }
-        fclose(f);
+        
         
     }
     free(temp);
