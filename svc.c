@@ -604,7 +604,7 @@ int svc_checkout(void *helper, char *branch_name) {
 char **list_branches(void *helper, int *n_branches) {
     // TODO: Implement
     if(n_branches==NULL) { return NULL; }
-
+    // i save them in time order, so return them directly
     help* h = (help*)helper;
     (*n_branches) = h->n_branches;
     char** result = NULL;
@@ -664,6 +664,7 @@ int svc_rm(void *helper, char *file_name) {
         }
     }
     int hash  =0;
+    //free the memory i alloc
     if(exist==-1){
         return -2;
     }else{
@@ -681,6 +682,7 @@ int svc_rm(void *helper, char *file_name) {
 int svc_reset(void *helper, char *commit_id) {
     // TODO: Implement
     //printf("reset %s\n",commit_id);
+    // the special condition
     if(commit_id == NULL) {
         return -1;
     }
