@@ -802,7 +802,6 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
         }
         
-        
     }
     free(temp);
     printf("Merge successful\n");
@@ -814,12 +813,5 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     free(message);
     node* newcommit = (node*)get_commit(helper,result);
     newcommit -> mother = target->m[target->size-1];
-    if (strcmp("631bf5",result)==0)
-    {
-        print_commit(helper,result);
-        print_commit(helper,target->m[target->size-1]->commitid);
-        print_commit(helper,h->head->m[h->head->size-2]->commitid);
-    }
-    
     return result;
 }
