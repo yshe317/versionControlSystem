@@ -234,6 +234,7 @@ struct changing* changes(node* n,working_space* ws,int* num) {
     return result;
 }
 void save_file(node* n,working_space* ws) {
+    //save thing from ws to the node in branch
     n->size = ws->file_num;
     n->files = (s_file*)malloc(sizeof(s_file)*n->size);
     for(int i = 0;i<ws->file_num;i++) {
