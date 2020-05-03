@@ -499,7 +499,7 @@ void print_commit(void *helper, char *commit_id) {
 
 int svc_branch(void *helper, char *branch_name) {
     // TODO: Implement
-    printf("branch(%s)",branch_name);
+    printf("branch(%s)\n",branch_name);
     if(branch_name==NULL) {
         return -1;
     }
@@ -549,7 +549,7 @@ int svc_branch(void *helper, char *branch_name) {
 
 int svc_checkout(void *helper, char *branch_name) {
     // TODO: Implement
-    printf("checkout %s",branch_name);
+    printf("checkout %s\n",branch_name);
     if(branch_name == NULL){
         return -1;
     }
@@ -615,7 +615,7 @@ char **list_branches(void *helper, int *n_branches) {
 
 int svc_add(void *helper, char *file_name) {
     // TODO: Implement
-    printf("add %s",file_name);
+    printf("add %s\n",file_name);
     if(file_name == NULL){
         return -1;
     }
@@ -649,7 +649,7 @@ int svc_add(void *helper, char *file_name) {
 
 int svc_rm(void *helper, char *file_name) {
     // TODO: Implement
-    printf("rm %s",file_name);
+    printf("rm %s\n",file_name);
     help* h = (help*)helper;
     if(file_name==NULL){
         return -1;
@@ -678,7 +678,7 @@ int svc_rm(void *helper, char *file_name) {
 
 int svc_reset(void *helper, char *commit_id) {
     // TODO: Implement
-    printf("reset %s",commit_id);
+    printf("reset %s\n",commit_id);
     if(commit_id == NULL) {
         return -1;
     }
@@ -733,7 +733,7 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
-    printf("merge %s",branch_name);
+    printf("merge %s\n",branch_name);
     if(branch_name == NULL) {
         printf("Invalid branch name\n");
         return NULL;
