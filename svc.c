@@ -799,10 +799,15 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             //move thing to local ws
         }
         if(temp[i].w == 1 || temp[i].w == 0) {
+            int find = 0;
             for(int i =0;i<n_resolutions;i++) {
                 if(strcmp(temp[i].filename, resolutions[i].file_name)==0) {
                     copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
+                    find = 1;
                 }
+            }
+            if(find == 0) {
+                svc_rm(helper,temp[i].filename);
             }
         }
 
