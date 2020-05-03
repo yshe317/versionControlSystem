@@ -421,6 +421,10 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
 
 
     char** ls = NULL;
+
+    //every node can have two parent
+    //father is the parent share a branch with target commit
+    //mother is the commit that be merged
     if(n->father!=NULL) {
         (*n_prev)++;
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
@@ -431,25 +435,20 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
         ls[(*n_prev)-1] = n->mother->commitid;
     }
-    //printf("%s\n",n->commitid);
-    
-    // while(n->last_node!=NULL) {
-    //     n = n->last_node;
-    //     (*n_prev)++;
-    //     ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
-    //     ls[(*n_prev)-1] = n->commitid;
-    // }
+
     return ls;
 }
 
 void print_change(struct changing* c,node* n) {
     if(c->w == 99) {
-
+        //skip number
     }else if(c->w == 0) {
-
+        //unchanged
     }else if(c->w == 2) {
+        //delete
         printf("    %c %s\n",'-',c->filename);
     }else if(c->w == 1) {
+        //modi
         int i;
         for(i = 0;i< n ->size;i++) {
             if(strcmp(c->filename,n->files[i].filename) == 0) {
@@ -465,6 +464,7 @@ void print_change(struct changing* c,node* n) {
         }
         printf("    %c %s [%10d -> %10d]\n",'/',c->filename,n->last_node->files[j].hash,n->files[i].hash);
     }else if(c->w == 3) {
+        //add
         printf("    %c %s\n",'+',c->filename);
     }
 }
@@ -803,11 +803,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         
     }
     free(temp);
-    
-
     printf("Merge successful\n");
-
-
 
     char* message = (char*)malloc(sizeof(char)*(15+strlen(branch_name)));
     strcpy(message,"Merged branch ");
