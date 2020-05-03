@@ -110,6 +110,7 @@ int copyFile(char *in, char *out) {
     return 0;
 }
 void localize_file(s_file* file,char* id) {
+    //create folder
     char* current = (char*)malloc(sizeof(char)*(strlen(file->filename)+8));
     strcpy(current,id);
     mkdir(current,0777);
@@ -132,6 +133,7 @@ void localize_file(s_file* file,char* id) {
 }
 
 void localize(node* n,char* id) {
+    //make the commit save in local file
     for(int i = 0;i<n->size;i++) {
         localize_file(&n->files[i],id);
     }
@@ -795,11 +797,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             fclose(f);
             copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
         }
-        
     }
     free(temp);
     printf("Merge successful\n");
-
     char* message = (char*)malloc(sizeof(char)*(15+strlen(branch_name)));
     strcpy(message,"Merged branch ");
     strcat(message,branch_name);
