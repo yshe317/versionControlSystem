@@ -812,6 +812,8 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     if (strcmp("631bf5",result)==0)
     {
         print_commit(helper,result);
+        print_commit(helper,target->m[target->size-1]->commitid);
+        print_commit(helper,h->head->m[h->head->size-1]->commitid);
     }
     
     return result;
