@@ -425,7 +425,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
         ls = (char**)realloc(ls,sizeof(char*)*(*n_prev));
         ls[(*n_prev)-1] = n->mother->commitid;
     }
-    print("%s\n",commit);
+    printf("%s\n",commit);
     
     // while(n->last_node!=NULL) {
     //     n = n->last_node;
