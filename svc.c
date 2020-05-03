@@ -813,7 +813,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     {
         print_commit(helper,result);
         print_commit(helper,target->m[target->size-1]->commitid);
-        print_commit(helper,h->head->m[h->head->size-1]->commitid);
+        print_commit(helper,h->head->m[h->head->size-2]->commitid);
     }
     
     return result;
