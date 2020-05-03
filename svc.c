@@ -803,9 +803,10 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             for(int i =0;i<n_resolutions;i++) {
                 if(strcmp(temp[i].filename, resolutions[i].file_name)==0) {
                     if(hash_file(NULL,resolutions[i].resolved_file)==-2) {
-                        continue;
+                        break;
+                    }else{
+                        copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
                     }
-                    copyFile(resolutions[i].resolved_file,resolutions[i].file_name);
                     //find = 1;
                 }
             }
